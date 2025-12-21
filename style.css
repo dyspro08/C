@@ -16,6 +16,12 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Roboto', sans-serif; background-color: var(--bg-dark); color: var(--text-primary); height: 100vh; overflow: hidden; display: flex; }
 
+/* [수정 1] 스크롤바 디자인 (흰색 스크롤바 어색함 해결) */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background-color: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background-color: var(--bg-lighter); border-radius: 5px; border: 2px solid var(--bg-dark); }
+::-webkit-scrollbar-thumb:hover { background-color: var(--text-secondary); }
+
 /* 로그인 & 모달 */
 .login-container, .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; display: flex; justify-content: center; align-items: center; }
 .login-container { background-color: var(--bg-dark); }
@@ -80,17 +86,44 @@ body { font-family: 'Roboto', sans-serif; background-color: var(--bg-dark); colo
 .user-card img { width: 40px; height: 40px; border-radius: 50%; margin-right: 12px; }
 
 /* 채팅 */
-.messages-container { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 8px; }
-.message-wrapper { display: flex; width: 100%; margin-bottom: 4px; }
-.message-wrapper.other .avatar { width: 36px; height: 36px; border-radius: 50%; margin-right: 10px; margin-top: auto; }
-.message-wrapper .bubble { padding: 10px 16px; max-width: 60%; line-height: 1.5; font-size: 15px; }
+.messages-container { 
+    flex: 1; 
+    overflow-y: auto; 
+    padding: 20px 24px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+    min-height: 0; /* Flexbox 스크롤 버그 방지 */
+}
+
+.message-wrapper { display: flex; width: 100%; margin-bottom: 4px; align-items: flex-start; }
+.message-wrapper.other .avatar { width: 36px; height: 36px; border-radius: 50%; margin-right: 10px; margin-top: 0; flex-shrink: 0; }
+
+/* [수정 2] 채팅 뭉개짐 해결 */
+.message-wrapper .bubble { 
+    padding: 10px 16px; 
+    max-width: 75%; /* 제한을 60% -> 75%로 완화 */
+    width: fit-content; /* 텍스트 길이에 맞춰 늘어남 (중요) */
+    line-height: 1.5; 
+    font-size: 15px;
+    word-break: break-all; /* 영문/숫자 강제 줄바꿈으로 튀어감 방지 */
+    word-wrap: break-word; /* 일반적인 줄바꿈 */
+    white-space: pre-wrap; /* 엔터와 공백 유지 */
+}
+
 .message-wrapper.other .bubble { background-color: var(--bubble-other); color: var(--text-primary); border-radius: 18px 18px 18px 4px; }
 .message-wrapper.me { justify-content: flex-end; }
 .message-wrapper.me .bubble { background-color: var(--bubble-me); color: var(--bubble-me-text); border-radius: 18px 18px 4px 18px; }
 .meta { font-size: 11px; color: var(--text-secondary); margin-left: 8px; margin-bottom: 2px; }
 .chat-image { max-width: 200px; border-radius: 10px; display: block; margin-bottom: 5px; cursor: pointer; }
 
-.input-area { padding: 20px; background-color: var(--bg-dark); }
+/* [수정 3] 채팅 칠 때 입력창 사라짐 해결 */
+.input-area { 
+    padding: 20px; 
+    background-color: var(--bg-dark); 
+    flex-shrink: 0; /* 스크롤 생길 때 찌그러짐 방지 (중요) */
+    z-index: 10;
+}
 .input-wrapper { background-color: var(--bg-lighter); border-radius: 24px; padding: 8px 16px; display: flex; align-items: center; }
 .input-wrapper input { background: none; border: none; color: white; flex: 1; outline: none; padding: 8px; }
 .attach-btn, .send-icon-btn { background: none; border: none; color: var(--text-secondary); font-size: 18px; cursor: pointer; padding: 8px; }
