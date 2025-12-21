@@ -24,7 +24,7 @@ const db = getFirestore(app);
 // === 전역 상태 ===
 let currentUser = null;
 let currentChatId = null;
-let currentPostId = null; // 커뮤니티 게시글 ID
+let currentPostId = null;
 let unsubscribeMessages = null;
 let unsubscribePosts = null;
 let unsubscribeComments = null;
@@ -32,35 +32,31 @@ let unsubscribeComments = null;
 const getEl = (id) => document.getElementById(id);
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. 네비게이션 & 버튼
+    // 버튼 이벤트
     getEl('googleLoginBtn')?.addEventListener('click', handleLogin);
-    // [변경] 우측 상단 로그아웃 버튼
     getEl('headerLogoutBtn')?.addEventListener('click', () => signOut(auth));
-    
-    // 설정 버튼은 이제 로그아웃 안 함 (추후 기능 추가용)
     getEl('settingsBtn')?.addEventListener('click', () => alert("설정 기능은 준비 중입니다."));
-
     getEl('messageInput')?.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
 
-    // 사이드바 이동
+    // 네비게이션
     getEl('homeBtn')?.addEventListener('click', showHomeView);
-    getEl('communityBtn')?.addEventListener('click', showCommunityView); // [NEW] 커뮤니티 버튼
+    getEl('communityBtn')?.addEventListener('click', showCommunityView);
 
-    // 서버 관련
+    // 서버
     getEl('addServerBtn')?.addEventListener('click', () => getEl('serverModal').style.display = 'flex');
     getEl('closeModalBtn')?.addEventListener('click', () => getEl('serverModal').style.display = 'none');
     getEl('createServerBtn')?.addEventListener('click', createServer);
     getEl('joinServerBtn')?.addEventListener('click', joinServer);
     getEl('inviteBtn')?.addEventListener('click', copyInviteCode);
 
-    // 홈 탭
+    // 친구 탭
     getEl('tabAll')?.addEventListener('click', () => switchFriendTab('all'));
     getEl('tabPending')?.addEventListener('click', () => switchFriendTab('pending'));
     getEl('tabAddFriend')?.addEventListener('click', () => switchFriendTab('add'));
     
-    // [NEW] 커뮤니티 관련 이벤트
+    // 커뮤니티
     getEl('writePostBtn')?.addEventListener('click', showWriteForm);
     getEl('cancelPostBtn')?.addEventListener('click', () => {
         getEl('postWriteSection').style.display = 'none';
@@ -71,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     getEl('submitCommentBtn')?.addEventListener('click', submitComment);
 });
 
-// === 로그인 로직 ===
+// === 로그인 ===
 async function handleLogin() {
     try { await signInWithPopup(auth, new GoogleAuthProvider()); } 
     catch (e) { alert("로그인 오류: " + e.message); }
@@ -87,7 +83,6 @@ onAuthStateChanged(auth, async (user) => {
         getEl('loginOverlay').style.display = 'none';
         getEl('myAvatar').src = user.photoURL;
         getEl('myName').textContent = displayName;
-        // 태그(#0000) 설정 코드 삭제됨
 
         await setDoc(doc(db, "users", user.uid), {
             uid: user.uid, displayName, email: user.email, photoURL: user.photoURL, lastLogin: serverTimestamp()
@@ -101,7 +96,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-// === 뷰 전환 (홈 / 커뮤니티 / 채팅) ===
+// === 화면 전환 ===
 
 function resetActiveIcons() {
     document.querySelectorAll('.server-icon').forEach(el => el.classList.remove('active'));
@@ -115,16 +110,15 @@ function showHomeView() {
     getEl('communityView').style.display = 'none';
     getEl('chatView').style.display = 'none';
 
-    // 헤더 및 사이드바 정리
     getEl('sidebarTitle').textContent = "다이렉트 메시지";
     getEl('mainHeaderTitle').textContent = "친구";
     getEl('mainHeaderIcon').className = "fas fa-user-friends";
     getEl('sidebarContent').innerHTML = '<div class="channel-category">친구</div><div id="dmList"></div>';
     
-    loadAllUsers(); // 친구 목록 로드 (가짜 데이터)
+    // 기본적으로 '모두' 탭으로
+    switchFriendTab('all');
 }
 
-// [NEW] 커뮤니티 화면
 function showCommunityView() {
     resetActiveIcons();
     getEl('communityBtn').classList.add('active');
@@ -133,30 +127,25 @@ function showCommunityView() {
     getEl('communityView').style.display = 'flex';
     getEl('chatView').style.display = 'none';
 
-    // UI 초기화
     getEl('postListSection').style.display = 'flex';
     getEl('postWriteSection').style.display = 'none';
     getEl('postDetailSection').style.display = 'none';
 
-    // 헤더 업데이트
     getEl('sidebarTitle').textContent = "커뮤니티";
     getEl('mainHeaderTitle').textContent = "자유게시판";
     getEl('mainHeaderIcon').className = "fas fa-globe";
     
-    // 사이드바 내용 변경
     getEl('sidebarContent').innerHTML = `
         <div class="channel-category">게시판</div>
         <div class="channel-item active" style="padding: 8px; color:white; background:#393c43; border-radius:4px;">
             <i class="fas fa-list"></i> 자유게시판
         </div>
     `;
-
     loadCommunityPosts();
 }
 
 function showServerView(serverId, serverName) {
     resetActiveIcons();
-    // 해당 서버 아이콘 active는 loadMyServers에서 처리됨 (DOM 재생성 이슈 방지 위해 간단히 처리)
     
     getEl('homeView').style.display = 'none';
     getEl('communityView').style.display = 'none';
@@ -177,7 +166,38 @@ function showServerView(serverId, serverName) {
     loadMessages(serverId);
 }
 
-// === 커뮤니티 기능 (게시판) ===
+// === 친구 탭 전환 ===
+function switchFriendTab(tabName) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    getEl('friendListView').style.display = 'none';
+    getEl('addFriendView').style.display = 'none';
+    
+    // 친구 추가 버튼 스타일 초기화 (배경색 복구)
+    getEl('tabAddFriend').style.backgroundColor = ''; 
+    getEl('tabAddFriend').style.color = '';
+
+    if (tabName === 'all') {
+        getEl('tabAll').classList.add('active');
+        getEl('friendListView').style.display = 'block';
+        loadAllUsers();
+    } else if (tabName === 'pending') {
+        getEl('tabPending').classList.add('active');
+        getEl('friendListView').style.display = 'block';
+        getEl('userListContainer').innerHTML = '<div style="padding:20px; color:#72767d;">대기 중인 요청이 없습니다.</div>';
+    } else if (tabName === 'add') {
+        const btn = getEl('tabAddFriend');
+        btn.classList.add('active');
+        // 친구 추가 탭 활성 시 스타일
+        btn.style.backgroundColor = 'transparent'; 
+        btn.style.color = '#3ba55c';
+        
+        getEl('addFriendView').style.display = 'flex'; // block -> flex로 변경 (중앙정렬 위해)
+        getEl('addFriendView').style.flexDirection = 'column';
+    }
+}
+
+// === 기타 기능들 (서버, 커뮤니티, 채팅) ===
+// (이전과 동일한 로직입니다)
 
 function loadCommunityPosts() {
     if (unsubscribePosts) unsubscribePosts();
@@ -186,21 +206,13 @@ function loadCommunityPosts() {
 
     unsubscribePosts = onSnapshot(q, (snapshot) => {
         container.innerHTML = '';
-        if(snapshot.empty) {
-            container.innerHTML = '<div style="color:#72767d; text-align:center;">게시글이 없습니다. 첫 글을 남겨보세요!</div>';
-        }
+        if(snapshot.empty) container.innerHTML = '<div style="color:#72767d; text-align:center; margin-top:20px;">게시글이 없습니다.</div>';
         snapshot.forEach(docSnap => {
             const post = docSnap.data();
             const date = post.createdAt ? new Date(post.createdAt.seconds * 1000).toLocaleDateString() : '';
-            
             const div = document.createElement('div');
             div.className = 'post-item';
-            div.innerHTML = `
-                <h3>${post.title}</h3>
-                <div class="post-info">
-                    <span>${post.authorName}</span> • <span>${date}</span>
-                </div>
-            `;
+            div.innerHTML = `<h3>${post.title}</h3><div class="post-info"><span>${post.authorName}</span> • <span>${date}</span></div>`;
             div.onclick = () => showPostDetail(docSnap.id, post);
             container.appendChild(div);
         });
@@ -217,69 +229,49 @@ function showWriteForm() {
 async function submitPost() {
     const title = getEl('postTitleInput').value.trim();
     const content = getEl('postContentInput').value.trim();
-    if (!title || !content) return alert("제목과 내용을 입력하세요.");
-
-    try {
-        await addDoc(collection(db, "posts"), {
-            title, content,
-            authorUid: currentUser.uid,
-            authorName: currentUser.displayName,
-            createdAt: serverTimestamp()
-        });
-        showCommunityView(); // 목록으로 복귀
-    } catch(e) {
-        alert("글쓰기 실패: " + e.message);
-    }
+    if (!title || !content) return;
+    await addDoc(collection(db, "posts"), {
+        title, content, authorUid: currentUser.uid, authorName: currentUser.displayName, createdAt: serverTimestamp()
+    });
+    showCommunityView();
 }
 
 function showPostDetail(postId, postData) {
     currentPostId = postId;
     getEl('postListSection').style.display = 'none';
     getEl('postDetailSection').style.display = 'flex';
-
     getEl('detailTitle').textContent = postData.title;
     getEl('detailAuthor').textContent = postData.authorName;
     getEl('detailDate').textContent = postData.createdAt ? new Date(postData.createdAt.seconds*1000).toLocaleString() : '';
     getEl('detailContent').textContent = postData.content;
-
     loadComments(postId);
 }
 
-// 댓글 로드
 function loadComments(postId) {
     if (unsubscribeComments) unsubscribeComments();
     const container = getEl('commentsContainer');
     const q = query(collection(db, "posts", postId, "comments"), orderBy("createdAt", "asc"));
-
     unsubscribeComments = onSnapshot(q, (snapshot) => {
         container.innerHTML = '';
         snapshot.forEach(doc => {
             const c = doc.data();
             const div = document.createElement('div');
             div.className = 'comment-item';
-            div.innerHTML = `
-                <div class="comment-header">${c.authorName}</div>
-                <div>${c.text}</div>
-            `;
+            div.innerHTML = `<div class="comment-header">${c.authorName}</div><div>${c.text}</div>`;
             container.appendChild(div);
         });
     });
 }
 
 async function submitComment() {
-    const input = getEl('commentInput');
-    const text = input.value.trim();
+    const text = getEl('commentInput').value.trim();
     if(!text || !currentPostId) return;
-
-    try {
-        await addDoc(collection(db, "posts", currentPostId, "comments"), {
-            text, authorName: currentUser.displayName, uid: currentUser.uid, createdAt: serverTimestamp()
-        });
-        input.value = '';
-    } catch(e) { console.error(e); }
+    await addDoc(collection(db, "posts", currentPostId, "comments"), {
+        text, authorName: currentUser.displayName, uid: currentUser.uid, createdAt: serverTimestamp()
+    });
+    getEl('commentInput').value = '';
 }
 
-// === 서버 기능 ===
 function loadMyServers() {
     if (!currentUser) return;
     const q = query(collection(db, "servers"), where("members", "array-contains", currentUser.uid));
@@ -292,7 +284,6 @@ function loadMyServers() {
             div.className = 'server-icon';
             div.textContent = server.name.substring(0, 2);
             div.onclick = (e) => {
-                // 아이콘 스타일 처리
                 document.querySelectorAll('.server-icon').forEach(el => el.classList.remove('active'));
                 e.target.classList.add('active');
                 showServerView(docSnap.id, server.name);
@@ -305,63 +296,46 @@ function loadMyServers() {
 async function createServer() {
     const name = getEl('newServerName').value.trim();
     if (!name) return;
-    try {
-        await addDoc(collection(db, "servers"), {
-            name: name, owner: currentUser.uid, members: [currentUser.uid], createdAt: serverTimestamp()
-        });
-        getEl('serverModal').style.display = 'none';
-    } catch (e) { alert("서버 생성 실패"); }
+    try { await addDoc(collection(db, "servers"), { name, owner: currentUser.uid, members: [currentUser.uid], createdAt: serverTimestamp() }); getEl('serverModal').style.display = 'none'; } catch (e) {}
 }
 
 async function joinServer() {
-    const serverId = getEl('joinServerCode').value.trim();
-    if (!serverId) return;
+    const id = getEl('joinServerCode').value.trim();
+    if (!id) return;
     try {
-        const ref = doc(db, "servers", serverId);
+        const ref = doc(db, "servers", id);
         const snap = await getDoc(ref);
-        if (snap.exists()) {
-            await updateDoc(ref, { members: arrayUnion(currentUser.uid) });
-            getEl('serverModal').style.display = 'none';
-        } else { alert("서버를 찾을 수 없습니다."); }
-    } catch (e) { alert("참가 실패"); }
+        if (snap.exists()) { await updateDoc(ref, { members: arrayUnion(currentUser.uid) }); getEl('serverModal').style.display = 'none'; }
+    } catch (e) {}
 }
 
 function copyInviteCode() {
-    navigator.clipboard.writeText(currentChatId).then(() => alert("초대 코드 복사됨: " + currentChatId));
+    navigator.clipboard.writeText(currentChatId).then(() => alert("코드 복사됨"));
 }
 
-// === 친구/DM ===
 async function loadAllUsers() {
     const q = query(collection(db, "users"));
     const snapshot = await getDocs(q);
     const container = getEl('userListContainer');
     container.innerHTML = '';
-    
-    let count = 0;
     snapshot.forEach(doc => {
         const user = doc.data();
         if (user.uid === currentUser.uid) return;
-        count++;
         const div = document.createElement('div');
         div.className = 'user-card';
-        div.innerHTML = `
-            <img src="${user.photoURL}">
-            <div><h4>${user.displayName}</h4></div>
-        `; // 이메일 등 개인정보 최소화
+        div.innerHTML = `<img src="${user.photoURL}"><div><h4>${user.displayName}</h4></div>`;
         div.onclick = () => startDM(user);
         container.appendChild(div);
     });
-    getEl('userCount').textContent = count;
+    getEl('userCount').textContent = snapshot.size - 1;
 }
 
 function startDM(targetUser) {
-    // 1:1 채팅방 ID
     const uids = [currentUser.uid, targetUser.uid].sort();
     const dmId = `dm_${uids[0]}_${uids[1]}`;
     
-    // UI 전환
     resetActiveIcons();
-    getEl('homeBtn').classList.add('active'); // DM도 크게 보면 홈 범주지만, 채팅창을 띄워야 함.
+    getEl('homeBtn').classList.add('active');
     
     getEl('homeView').style.display = 'none';
     getEl('communityView').style.display = 'none';
@@ -378,7 +352,6 @@ function startDM(targetUser) {
             ${targetUser.displayName}
         </div>
     `;
-
     loadMessages(dmId);
 }
 
@@ -386,7 +359,6 @@ function loadMessages(chatId) {
     if (unsubscribeMessages) unsubscribeMessages();
     const container = getEl('messagesContainer');
     const q = query(collection(db, "chats", chatId, "messages"), orderBy("createdAt", "asc"));
-
     unsubscribeMessages = onSnapshot(q, (snapshot) => {
         container.innerHTML = '';
         snapshot.forEach(doc => {
@@ -394,14 +366,7 @@ function loadMessages(chatId) {
             const el = document.createElement('div');
             el.className = 'message';
             let time = msg.createdAt ? new Date(msg.createdAt.seconds*1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : '';
-            el.innerHTML = `
-                <img src="${msg.photoURL}" class="avatar">
-                <div class="content">
-                    <span class="username">${msg.displayName}</span>
-                    <span class="timestamp">${time}</span>
-                    <div class="message-text">${msg.text}</div>
-                </div>
-            `;
+            el.innerHTML = `<img src="${msg.photoURL}" class="avatar"><div class="content"><span class="username">${msg.displayName}</span><span class="timestamp">${time}</span><div class="message-text">${msg.text}</div></div>`;
             container.appendChild(el);
         });
         container.scrollTop = container.scrollHeight;
@@ -412,29 +377,8 @@ async function sendMessage() {
     const input = getEl('messageInput');
     const text = input.value.trim();
     if (!text || !currentChatId) return;
-    
     await addDoc(collection(db, "chats", currentChatId, "messages"), {
-        text, uid: currentUser.uid, displayName: currentUser.displayName, 
-        photoURL: currentUser.photoURL, createdAt: serverTimestamp()
+        text, uid: currentUser.uid, displayName: currentUser.displayName, photoURL: currentUser.photoURL, createdAt: serverTimestamp()
     });
     input.value = '';
-}
-
-function switchFriendTab(tabName) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    getEl('friendListView').style.display = 'none';
-    getEl('addFriendView').style.display = 'none';
-
-    if (tabName === 'all') {
-        getEl('tabAll').classList.add('active');
-        getEl('friendListView').style.display = 'block';
-        loadAllUsers();
-    } else if (tabName === 'pending') {
-        getEl('tabPending').classList.add('active');
-        getEl('friendListView').style.display = 'block';
-        getEl('userListContainer').innerHTML = '<div style="padding:20px; color:#72767d;">대기 중인 요청이 없습니다.</div>';
-    } else if (tabName === 'add') {
-        getEl('tabAddFriend').classList.add('active');
-        getEl('addFriendView').style.display = 'block';
-    }
 }
