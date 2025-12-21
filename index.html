@@ -12,7 +12,7 @@
     <div id="loginOverlay" class="login-container">
         <div class="login-box">
             <i class="fab fa-discord fa-3x" style="color: #5865f2; margin-bottom: 20px;"></i>
-            <h2>돌아오신 것을 환영합니다!</h2>
+            <h2>환영합니다!</h2>
             <p>다시 만나서 반가워요!</p>
             <button id="googleLoginBtn" class="google-btn">
                 <i class="fab fa-google"></i> Google로 로그인
@@ -29,15 +29,13 @@
             <div class="modal-content">
                 <div class="modal-option">
                     <h4>직접 만들기</h4>
-                    <p>나와 친구들을 위한 서버를 만듭니다.</p>
-                    <input type="text" id="newServerName" placeholder="서버 이름 (예: 게임방)">
+                    <input type="text" id="newServerName" placeholder="서버 이름">
                     <button id="createServerBtn" class="action-btn create">만들기</button>
                 </div>
                 <div class="divider"><span>또는</span></div>
                 <div class="modal-option">
                     <h4>서버 참가하기</h4>
-                    <p>초대 코드를 이미 가지고 있나요?</p>
-                    <input type="text" id="joinServerCode" placeholder="초대 코드 입력 (예: server_123...)">
+                    <input type="text" id="joinServerCode" placeholder="초대 코드 입력">
                     <button id="joinServerBtn" class="action-btn join">참가하기</button>
                 </div>
             </div>
@@ -49,6 +47,11 @@
             <div class="server-icon active" id="homeBtn" title="다이렉트 메시지">
                 <i class="fab fa-discord"></i>
             </div>
+            
+            <div class="server-icon community-icon" id="communityBtn" title="커뮤니티">
+                <i class="fas fa-globe"></i>
+            </div>
+
             <div class="server-separator"></div>
             
             <div id="serverListContainer"></div>
@@ -60,86 +63,120 @@
 
         <aside class="channel-sidebar">
             <div class="sidebar-header">
-                <h3 id="sidebarTitle">다이렉트 메시지</h3>
+                <button id="sidebarTitle">다이렉트 메시지</button>
             </div>
             
             <div class="channel-list-area" id="channelListArea">
-                <div class="channel-category">친구</div>
-                <div id="dmList">
-                    </div>
+                <div id="sidebarContent"></div> 
             </div>
 
             <div class="user-profile-area" id="currentUserProfile">
                 <img id="myAvatar" src="" class="avatar-small">
                 <div class="user-info">
-                    <span id="myName" class="name">로딩중...</span>
-                    <span id="myTag" class="discriminator">#0000</span>
-                </div>
+                    <span id="myName" class="name">...</span>
+                    </div>
                 <div class="profile-icons">
                     <i class="fas fa-microphone"></i>
                     <i class="fas fa-headphones"></i>
-                    <i class="fas fa-cog" id="logoutBtn" title="로그아웃"></i>
+                    <i class="fas fa-cog" id="settingsBtn" title="사용자 설정"></i>
                 </div>
             </div>
         </aside>
 
         <main class="main-area">
+            <header class="main-header">
+                <div class="header-left">
+                    <i class="fas fa-hashtag" id="mainHeaderIcon"></i>
+                    <h3 id="mainHeaderTitle">친구</h3>
+                </div>
+                <div class="header-right">
+                    <button id="headerLogoutBtn" class="logout-btn-small" title="로그아웃">
+                        <i class="fas fa-sign-out-alt"></i> 로그아웃
+                    </button>
+                </div>
+            </header>
             
             <div id="homeView" class="view-section active">
-                <header class="main-header">
-                    <div class="header-content">
-                        <i class="fas fa-user-friends"></i>
-                        <h3>친구</h3>
-                        <div class="tab-bar">
-                            <span class="tab active">모두</span>
-                            <span class="tab">대기 중</span>
-                            <span class="tab add-friend">친구 추가하기</span>
-                        </div>
+                <div class="tab-bar-container">
+                    <div class="tab-bar">
+                        <span class="tab active" id="tabAll">모두</span>
+                        <span class="tab" id="tabPending">대기 중</span>
+                        <span class="tab add-friend" id="tabAddFriend">친구 추가하기</span>
                     </div>
-                </header>
+                </div>
+
                 <div class="content-body">
-                    <div class="search-wrapper">
-                        <input type="text" id="userSearchInput" placeholder="검색하기">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <div class="friends-label">모든 친구 / 사용자</div>
-                    <div class="user-grid-container" id="userListContainer">
+                    <div id="friendListView">
+                        <div class="search-wrapper">
+                            <input type="text" id="userSearchInput" placeholder="친구 검색하기">
+                            <i class="fas fa-search"></i>
                         </div>
+                        <div class="friends-label">친구 목록 (<span id="userCount">0</span>)</div>
+                        <div class="user-grid-container" id="userListContainer"></div>
+                    </div>
+                    <div id="addFriendView" style="display:none;">
+                        <div class="add-friend-header">
+                            <h2>친구 추가하기</h2>
+                            <p>사용자명으로 친구를 추가할 수 있습니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="communityView" class="view-section" style="display:none;">
+                
+                <div id="postListSection" class="community-layout">
+                    <div class="community-actions">
+                        <button id="writePostBtn" class="action-btn create" style="width:auto; padding: 8px 20px;">
+                            <i class="fas fa-pen"></i> 글쓰기
+                        </button>
+                    </div>
+                    <div id="postsContainer" class="posts-list">
+                        </div>
+                </div>
+
+                <div id="postWriteSection" class="community-layout" style="display:none;">
+                    <div class="write-form">
+                        <input type="text" id="postTitleInput" placeholder="제목을 입력하세요" class="post-input">
+                        <textarea id="postContentInput" placeholder="내용을 입력하세요..." class="post-textarea"></textarea>
+                        <div class="form-buttons">
+                            <button id="cancelPostBtn" class="action-btn join">취소</button>
+                            <button id="submitPostBtn" class="action-btn create">등록</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="postDetailSection" class="community-layout" style="display:none;">
+                    <button id="backToListBtn" class="back-btn"><i class="fas fa-arrow-left"></i> 목록으로</button>
+                    
+                    <div class="post-detail-card">
+                        <h2 id="detailTitle">제목</h2>
+                        <div class="post-meta">
+                            <span id="detailAuthor">작성자</span> • <span id="detailDate">날짜</span>
+                        </div>
+                        <div id="detailContent" class="post-body">내용</div>
+                    </div>
+
+                    <div class="comment-section">
+                        <h4>댓글</h4>
+                        <div id="commentsContainer" class="comments-list"></div>
+                        <div class="comment-input-wrapper">
+                            <input type="text" id="commentInput" placeholder="댓글을 남겨보세요">
+                            <button id="submitCommentBtn"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div id="chatView" class="view-section" style="display:none;">
-                <header class="main-header chat-header">
-                    <div class="header-left">
-                        <i class="fas fa-hashtag" id="chatHeaderIcon"></i>
-                        <h3 id="chatHeaderTitle">일반</h3>
-                        <div id="inviteSection" style="display:none; margin-left:15px;">
-                            <button id="inviteBtn" class="invite-btn">친구 초대하기</button>
-                        </div>
-                    </div>
-                    <div class="header-right">
-                        <i class="fas fa-bell"></i>
-                        <i class="fas fa-thumbtack"></i>
-                        <i class="fas fa-users"></i>
-                        <div class="search-bar-small">
-                            <input type="text" placeholder="검색">
-                            <i class="fas fa-search"></i>
-                        </div>
-                    </div>
-                </header>
-
-                <div class="messages-container" id="messagesContainer">
-                    </div>
-
+                <div id="inviteSection" style="display:none; position:absolute; top:12px; left:250px; z-index:20;">
+                    <button id="inviteBtn" class="invite-btn">친구 초대하기</button>
+                </div>
+                <div class="messages-container" id="messagesContainer"></div>
                 <div class="input-area">
                     <div class="input-wrapper">
                         <button class="attach-btn"><i class="fas fa-plus-circle"></i></button>
                         <input type="text" id="messageInput" placeholder="메시지 보내기">
-                        <div class="input-icons">
-                            <i class="fas fa-gift"></i>
-                            <i class="fas fa-sticky-note"></i>
-                            <i class="far fa-smile"></i>
-                        </div>
                     </div>
                 </div>
             </div>
