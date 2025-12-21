@@ -7,7 +7,7 @@ import {
     serverTimestamp, setDoc, doc, getDocs 
 } from "firebase/firestore";
 
-// Firebase 설정
+// 1. Firebase 설정
 const firebaseConfig = {
     apiKey: "AIzaSyBw2TJjZYZZPd1piCeoFnAXhqEAcCLe1FE",
     authDomain: "chat-7e64b.firebaseapp.com",
@@ -18,118 +18,168 @@ const firebaseConfig = {
     measurementId: "G-QMTLBH6TX0"
 };
 
+// 앱 초기화
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// === 상태 변수 ===
+// === 전역 변수 ===
 let currentUser = null;
-let currentChatId = "general"; // 현재 보고 있는 채팅방 ID (기본: general)
-let isDmMode = false; // 현재 DM 중인지 확인
-let unsubscribeMessages = null; // 리스너 해제용
+let currentChatId = "general";
 
-// === DOM 요소 ===
-const loginOverlay = document.getElementById('loginOverlay');
-const homeView = document.getElementById('homeView');
-const chatView = document.getElementById('chatView');
-const messagesContainer = document.getElementById('messagesContainer');
-const messageInput = document.getElementById('messageInput');
-const userListContainer = document.getElementById('userListContainer');
-const userSearchInput = document.getElementById('userSearchInput');
-const chatHeaderTitle = document.getElementById('chatHeaderTitle');
-const chatHeaderIcon = document.getElementById('chatHeaderIcon');
+// === DOM 요소 가져오기 함수 (안전하게 가져오기 위함) ===
+const getEl = (id) => document.getElementById(id);
 
-// === 1. 인증 및 사용자 관리 ===
+// === 메인 실행 로직 ===
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("스크립트 로드 완료: 이벤트 리스너 연결 시작");
 
-// 로그인
-document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+    // 1. 로그인 버튼 이벤트 연결
+    const loginBtn = getEl('googleLoginBtn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', handleLogin);
+        console.log("로그인 버튼 연결 성공");
+    } else {
+        console.error("오류: 로그인 버튼(googleLoginBtn)을 찾을 수 없습니다.");
+    }
+
+    // 2. 로그아웃 버튼
+    const logoutBtn = getEl('logoutBtn');
+    if (logoutBtn) logoutBtn.addEventListener('click', () => signOut(auth));
+
+    // 3. 메시지 전송 (엔터키 & 버튼)
+    const msgInput = getEl('messageInput');
+    if (msgInput) {
+        msgInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    }
+    
+    // 4. 홈 버튼 등 기타 이벤트
+    const homeBtn = getEl('homeBtn');
+    if(homeBtn) homeBtn.addEventListener('click', showHomeView);
+
+    // 5. 서버 추가 관련
+    const addServerBtn = getEl('addServerBtn');
+    const closeModalBtn = getEl('closeModalBtn');
+    const saveServerBtn = getEl('saveServerBtn');
+
+    if(addServerBtn) addServerBtn.addEventListener('click', () => getEl('serverModal').style.display = 'flex');
+    if(closeModalBtn) closeModalBtn.addEventListener('click', () => getEl('serverModal').style.display = 'none');
+    if(saveServerBtn) saveServerBtn.addEventListener('click', createServer); // 함수 분리됨
+
+    // 검색창
+    const searchInput = getEl('userSearchInput');
+    if(searchInput) searchInput.addEventListener('input', handleSearch);
+
+    // 초기 일반 채널 클릭 연결
+    const generalServer = document.querySelector('[data-id="general"]');
+    if(generalServer) {
+        generalServer.addEventListener('click', function() {
+            showChatView('general', '일반', false);
+            document.querySelectorAll('.server-icon').forEach(el => el.classList.remove('active'));
+            this.classList.add('active');
+            getEl('currentServerName').textContent = '일반 서버';
+        });
+    }
+});
+
+// === 기능 함수들 ===
+
+// 로그인 처리 함수
+async function handleLogin() {
+    console.log("로그인 시도 중...");
     try {
         const provider = new GoogleAuthProvider();
         await signInWithPopup(auth, provider);
+        console.log("팝업 닫힘");
     } catch (error) {
-        console.error(error);
+        console.error("로그인 에러:", error);
+        alert("로그인 실패: " + error.message);
     }
-});
+}
 
-// 로그아웃
-document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
-
-// 인증 상태 변화 감지
+// 인증 상태 변화 감지 (로그인 성공 시 자동 실행)
 onAuthStateChanged(auth, async (user) => {
+    const loginOverlay = getEl('loginOverlay');
+    const currentUserProfile = getEl('currentUserProfile');
+
     if (user) {
+        console.log("로그인 감지됨:", user.displayName);
         currentUser = user;
-        loginOverlay.style.display = 'none';
+        if(loginOverlay) loginOverlay.style.display = 'none';
+        if(currentUserProfile) currentUserProfile.style.display = 'flex';
         
-        // 내 프로필 UI 업데이트
-        document.getElementById('myAvatar').src = user.photoURL;
-        document.getElementById('myName').textContent = user.displayName;
+        getEl('myAvatar').src = user.photoURL;
+        getEl('myName').textContent = user.displayName;
 
-        // DB에 사용자 정보 저장/업데이트 (중요: 검색을 위해 필요)
-        await setDoc(doc(db, "users", user.uid), {
-            uid: user.uid,
-            displayName: user.displayName,
-            photoURL: user.photoURL,
-            email: user.email,
-            lastLogin: serverTimestamp()
-        }, { merge: true });
+        // DB에 유저 정보 저장
+        try {
+            await setDoc(doc(db, "users", user.uid), {
+                uid: user.uid,
+                displayName: user.displayName,
+                photoURL: user.photoURL,
+                email: user.email,
+                lastLogin: serverTimestamp()
+            }, { merge: true });
+        } catch(e) {
+            console.error("유저 정보 저장 실패:", e);
+        }
 
-        // 초기 화면 로드 (홈 화면)
         showHomeView();
     } else {
+        console.log("로그아웃 상태");
         currentUser = null;
-        loginOverlay.style.display = 'flex';
+        if(loginOverlay) loginOverlay.style.display = 'flex';
+        if(currentUserProfile) currentUserProfile.style.display = 'none';
     }
 });
 
-// === 2. 뷰 전환 로직 (홈 vs 채팅) ===
-
+// 뷰 전환
 function showHomeView() {
-    homeView.style.display = 'flex';
-    chatView.style.display = 'none';
-    document.getElementById('currentServerName').textContent = "홈";
-    document.getElementById('homeBtn').classList.add('active');
+    getEl('homeView').style.display = 'flex';
+    getEl('chatView').style.display = 'none';
+    getEl('currentServerName').textContent = "홈";
+    getEl('homeBtn').classList.add('active');
     
-    // 사이드바의 다른 활성 상태 제거
+    // 다른 서버 아이콘 활성 해제
     document.querySelectorAll('.server-icon').forEach(el => {
         if(el.id !== 'homeBtn') el.classList.remove('active');
     });
 
-    loadAllUsers(); // 사용자 목록 불러오기
+    loadAllUsers();
 }
 
 function showChatView(chatId, title, isDM = false) {
-    homeView.style.display = 'none';
-    chatView.style.display = 'flex';
+    getEl('homeView').style.display = 'none';
+    getEl('chatView').style.display = 'flex';
     
     currentChatId = chatId;
-    isDmMode = isDM;
     
-    chatHeaderTitle.textContent = title;
-    chatHeaderIcon.className = isDM ? "fas fa-at" : "fas fa-hashtag"; // 아이콘 변경
+    getEl('chatHeaderTitle').textContent = title;
+    getEl('chatHeaderIcon').className = isDM ? "fas fa-at" : "fas fa-hashtag";
     
     loadMessages(chatId);
 }
 
-// 홈 버튼 클릭 이벤트
-document.getElementById('homeBtn').addEventListener('click', showHomeView);
-
-// === 3. 사용자 목록 및 DM 기능 ===
-
+// 사용자 목록 로드
 async function loadAllUsers() {
-    const q = query(collection(db, "users"));
-    const querySnapshot = await getDocs(q);
-    
-    // 렌더링 함수
-    renderUserGrid(querySnapshot.docs);
+    try {
+        const q = query(collection(db, "users"));
+        const querySnapshot = await getDocs(q);
+        renderUserGrid(querySnapshot.docs);
+    } catch(e) {
+        console.error("사용자 목록 로딩 실패 (DB 규칙 확인 필요):", e);
+    }
 }
 
 function renderUserGrid(docs) {
-    userListContainer.innerHTML = '';
+    const container = getEl('userListContainer');
+    container.innerHTML = '';
     
-    docs.forEach(doc => {
-        const user = doc.data();
-        // 나 자신은 목록에서 뺄 수도 있음 (선택사항)
-        if (user.uid === currentUser.uid) return;
+    docs.forEach(docSnap => {
+        const user = docSnap.data();
+        if (currentUser && user.uid === currentUser.uid) return; // 나 자신 제외
 
         const card = document.createElement('div');
         card.className = 'user-card';
@@ -138,70 +188,61 @@ function renderUserGrid(docs) {
             <h4>${user.displayName}</h4>
             <p>${user.email}</p>
         `;
-        
-        // 클릭 시 DM 시작
         card.addEventListener('click', () => startDM(user));
-        userListContainer.appendChild(card);
+        container.appendChild(card);
     });
 }
 
-// 사용자 검색 기능
-userSearchInput.addEventListener('input', (e) => {
+// 검색 기능
+function handleSearch(e) {
     const keyword = e.target.value.toLowerCase();
     const cards = document.querySelectorAll('.user-card');
-    
     cards.forEach(card => {
         const name = card.querySelector('h4').textContent.toLowerCase();
-        if (name.includes(keyword)) {
-            card.style.display = 'flex';
-        } else {
-            card.style.display = 'none';
-        }
+        card.style.display = name.includes(keyword) ? 'flex' : 'none';
     });
-});
+}
 
-// DM 시작 로직
+// DM 시작
 function startDM(targetUser) {
-    // 1:1 채팅방 ID 생성 규칙: 두 유저의 UID를 정렬해서 합침 (항상 고유함)
     const uids = [currentUser.uid, targetUser.uid].sort();
     const dmId = `dm_${uids[0]}_${uids[1]}`;
-    
-    // 뷰 전환
     showChatView(dmId, targetUser.displayName, true);
 }
 
-// === 4. 채팅 기능 (통합) ===
-
+// 메시지 로드 (실시간)
+let unsubscribeMessages = null;
 function loadMessages(chatId) {
-    // 이전 리스너가 있다면 해제 (메모리 누수 방지)
     if (unsubscribeMessages) unsubscribeMessages();
 
-    // 동적 컬렉션 경로: chats -> {chatId} -> messages
-    // 주의: Firestore 구조를 'chats' 컬렉션 하나로 통합 관리
+    const messagesContainer = getEl('messagesContainer');
+    // 채팅방 하위 컬렉션으로 접근
     const messagesRef = collection(db, "chats", chatId, "messages");
     const q = query(messagesRef, orderBy("createdAt", "asc"));
 
     unsubscribeMessages = onSnapshot(q, (snapshot) => {
         messagesContainer.innerHTML = '';
-        
         if (snapshot.empty) {
-            messagesContainer.innerHTML = `<div class="welcome-message"><p>대화의 시작입니다!</p></div>`;
+            messagesContainer.innerHTML = `<div class="welcome-message"><p>대화가 없습니다. 첫 메시지를 보내보세요!</p></div>`;
         }
 
-        snapshot.forEach((doc) => {
-            const msg = doc.data();
+        snapshot.forEach((docSnap) => {
+            const msg = docSnap.data();
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message';
             
-            // 시간 표시
-            const time = msg.createdAt ? msg.createdAt.toDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '...';
+            // 시간 처리
+            let timeStr = '...';
+            if(msg.createdAt) {
+                timeStr = msg.createdAt.toDate().toLocaleTimeString('ko-KR', {hour: '2-digit', minute:'2-digit'});
+            }
 
             messageDiv.innerHTML = `
                 <img src="${msg.photoURL}" class="avatar">
                 <div class="message-content">
                     <div class="message-info">
                         <span class="username">${msg.displayName}</span>
-                        <span class="timestamp">${time}</span>
+                        <span class="timestamp">${timeStr}</span>
                     </div>
                     <div class="message-text">${msg.text}</div>
                 </div>
@@ -214,7 +255,8 @@ function loadMessages(chatId) {
 
 // 메시지 전송
 async function sendMessage() {
-    const text = messageInput.value.trim();
+    const input = getEl('messageInput');
+    const text = input.value.trim();
     if (text === "" || !currentUser) return;
 
     try {
@@ -226,61 +268,35 @@ async function sendMessage() {
             photoURL: currentUser.photoURL,
             createdAt: serverTimestamp()
         });
-        messageInput.value = "";
+        input.value = "";
     } catch (error) {
         console.error("전송 실패:", error);
+        alert("메시지 전송 실패: 권한이 없거나 네트워크 오류입니다.");
     }
 }
 
-messageInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
-});
-
-// === 5. 서버 추가 기능 ===
-
-const serverModal = document.getElementById('serverModal');
-const addServerBtn = document.getElementById('addServerBtn');
-const closeModalBtn = document.getElementById('closeModalBtn');
-const saveServerBtn = document.getElementById('saveServerBtn');
-const newServerName = document.getElementById('newServerName');
-const serverList = document.getElementById('serverList');
-
-// 모달 열기
-addServerBtn.addEventListener('click', () => serverModal.style.display = 'flex');
-// 모달 닫기
-closeModalBtn.addEventListener('click', () => serverModal.style.display = 'none');
-
-// 서버 만들기
-saveServerBtn.addEventListener('click', async () => {
-    const name = newServerName.value.trim();
+// 서버 만들기 (UI만 처리)
+function createServer() {
+    const input = getEl('newServerName');
+    const name = input.value.trim();
     if (!name) return;
 
-    // UI에 서버 아이콘 추가 (간단 구현)
-    // 실제로는 DB 'servers' 컬렉션에 저장하고 onSnapshot으로 불러와야 함
+    const serverList = getEl('serverList');
     const serverDiv = document.createElement('div');
     serverDiv.className = 'server-icon';
-    serverDiv.textContent = name.substring(0, 2); // 앞 2글자만 표시
+    serverDiv.textContent = name.substring(0, 2);
     serverDiv.title = name;
     
-    // 서버 클릭 이벤트 (일반 채팅방으로 이동 예시)
+    // 새 서버 클릭 이벤트
     const newServerId = "server_" + Date.now();
     serverDiv.addEventListener('click', () => {
         showChatView(newServerId, name, false);
         document.querySelectorAll('.server-icon').forEach(el => el.classList.remove('active'));
         serverDiv.classList.add('active');
-        document.getElementById('currentServerName').textContent = name;
+        getEl('currentServerName').textContent = name;
     });
 
     serverList.appendChild(serverDiv);
-    
-    serverModal.style.display = 'none';
-    newServerName.value = '';
-});
-
-// 초기화: 기본 채널 이벤트 연결
-document.querySelector('[data-id="general"]').addEventListener('click', function() {
-    showChatView('general', '일반', false);
-    document.querySelectorAll('.server-icon').forEach(el => el.classList.remove('active'));
-    this.classList.add('active');
-    document.getElementById('currentServerName').textContent = '일반 서버';
-});
+    getEl('serverModal').style.display = 'none';
+    input.value = '';
+}
