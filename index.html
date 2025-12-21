@@ -3,62 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Clone Chat</title>
+    <title>Hybrid Chat App</title>
     <link rel="stylesheet" href="style.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <div id="loginOverlay" class="login-container">
+        <div class="login-box">
+            <h2>채팅 입장하기</h2>
+            <p>Google 계정으로 로그인하여 대화에 참여하세요.</p>
+            <button id="googleLoginBtn" class="google-btn">
+                <i class="fab fa-google"></i> Google로 계속하기
+            </button>
+        </div>
+    </div>
+
+    <div id="serverModal" class="modal-overlay" style="display:none;">
+        <div class="modal-box">
+            <h3>새 서버 만들기</h3>
+            <input type="text" id="newServerName" placeholder="서버 이름 입력">
+            <div class="modal-actions">
+                <button id="closeModalBtn" class="cancel-btn">취소</button>
+                <button id="saveServerBtn" class="save-btn">만들기</button>
+            </div>
+        </div>
+    </div>
 
     <div class="app-container">
-        <nav class="server-sidebar">
-            <div class="server-icon active"><i class="fab fa-discord"></i></div>
+        <nav class="server-sidebar" id="serverSidebar">
+            <div class="server-icon active" id="homeBtn" title="홈 (친구 목록)"><i class="fas fa-home"></i></div>
             <div class="server-separator"></div>
-            <div class="server-icon">A</div>
-            <div class="server-icon">B</div>
+            <div id="serverList">
+                <div class="server-icon" data-id="general"><i class="fab fa-discord"></i></div>
+            </div>
+            <div class="server-icon add-server" id="addServerBtn"><i class="fas fa-plus"></i></div>
         </nav>
 
         <aside class="channel-sidebar">
-            <header class="channel-header">
-                <h3>내 채팅 서버</h3>
-                <i class="fas fa-chevron-down"></i>
-            </header>
-            <div class="channel-list">
-                <div class="channel-group">채팅 채널</div>
-                <div class="channel-item active">
-                    <i class="fas fa-hashtag"></i> 일반
-                </div>
-                <div class="channel-item">
-                    <i class="fas fa-hashtag"></i> 잡담
+            <div class="sidebar-header">
+                <h3 id="currentServerName">홈</h3>
+            </div>
+            
+            <div class="channel-group">
+                <div class="group-label">메뉴 / 채널</div>
+                <div id="channelList">
+                    <div class="channel-item active"><i class="fas fa-user-friends"></i> 친구</div>
                 </div>
             </div>
-            <div class="user-profile">
-                <div class="avatar">U</div>
-                <div class="username-info">
-                    <span id="current-username">User</span>
-                    <span class="discriminator">#1234</span>
+
+            <div class="user-profile-area" id="currentUserProfile">
+                <img id="myAvatar" src="" class="avatar-small">
+                <div class="user-info">
+                    <span id="myName" class="name">Guest</span>
+                    <span class="status">온라인</span>
                 </div>
+                <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </aside>
 
-        <main class="chat-area">
-            <header class="chat-header">
-                <i class="fas fa-hashtag"></i>
-                <h3>일반</h3>
-                <span class="topic">디스코드 스타일 채팅 만들기</span>
-            </header>
-
-            <div class="chat-messages" id="message-container">
-                <div class="welcome-message">
-                    <h3># 일반 채널에 오신 것을 환영합니다!</h3>
-                    <p>이곳은 채팅의 시작점입니다.</p>
-                </div>
+        <main class="main-area">
+            
+            <div id="homeView" class="view-section active">
+                <header class="chat-header">
+                    <h2>친구 / 사용자 찾기</h2>
+                    <div class="search-bar">
+                        <input type="text" id="userSearchInput" placeholder="사용자 검색하기...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </header>
+                <div class="user-grid-container" id="userListContainer">
+                    </div>
             </div>
 
-            <div class="chat-input-area">
-                <div class="input-wrapper">
-                    <i class="fas fa-plus-circle add-file-icon"></i>
-                    <input type="text" id="message-input" placeholder="# 일반에 메시지 보내기" autocomplete="off">
+            <div id="chatView" class="view-section" style="display:none;">
+                <header class="chat-header">
+                    <div class="header-left">
+                        <i class="fas fa-hashtag" id="chatHeaderIcon"></i>
+                        <h2 id="chatHeaderTitle">일반</h2>
+                    </div>
+                </header>
+
+                <div class="messages-container" id="messagesContainer">
+                    </div>
+
+                <div class="input-area">
+                    <div class="input-wrapper">
+                        <button class="attach-btn"><i class="fas fa-plus-circle"></i></button>
+                        <input type="text" id="messageInput" placeholder="메시지 보내기">
+                        <div class="input-icons">
+                            <i class="far fa-smile"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
