@@ -51,11 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
     getEl('joinServerBtn')?.addEventListener('click', joinServer);
     getEl('inviteBtn')?.addEventListener('click', copyInviteCode);
 
-    // 친구 탭
-    getEl('tabAll')?.addEventListener('click', () => switchFriendTab('all'));
-    getEl('tabPending')?.addEventListener('click', () => switchFriendTab('pending'));
-    getEl('tabAddFriend')?.addEventListener('click', () => switchFriendTab('add'));
-    
     // 커뮤니티
     getEl('writePostBtn')?.addEventListener('click', showWriteForm);
     getEl('cancelPostBtn')?.addEventListener('click', () => {
@@ -65,6 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
     getEl('submitPostBtn')?.addEventListener('click', submitPost);
     getEl('backToListBtn')?.addEventListener('click', showCommunityView);
     getEl('submitCommentBtn')?.addEventListener('click', submitComment);
+
+    // 검색
+    getEl('userSearchInput')?.addEventListener('input', handleSearch);
 });
 
 // === 로그인 ===
@@ -89,6 +87,8 @@ onAuthStateChanged(auth, async (user) => {
         }, { merge: true });
 
         loadMyServers();
+        // 로그인 시 최근 대화 목록 불러와서 사이드바에 표시
+        renderRecentDMs();
         showHomeView();
     } else {
         currentUser = null;
@@ -113,10 +113,11 @@ function showHomeView() {
     getEl('sidebarTitle').textContent = "다이렉트 메시지";
     getEl('mainHeaderTitle').textContent = "친구";
     getEl('mainHeaderIcon').className = "fas fa-user-friends";
-    getEl('sidebarContent').innerHTML = '<div class="channel-category">친구</div><div id="dmList"></div>';
     
-    // 기본적으로 '모두' 탭으로
-    switchFriendTab('all');
+    // 사이드바에는 항상 최근 대화 목록 표시
+    renderRecentDMs();
+    
+    loadAllUsers();
 }
 
 function showCommunityView() {
@@ -166,44 +167,126 @@ function showServerView(serverId, serverName) {
     loadMessages(serverId);
 }
 
-// === 친구 탭 전환 ===
-function switchFriendTab(tabName) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    getEl('friendListView').style.display = 'none';
-    getEl('addFriendView').style.display = 'none';
-    
-    // 친구 추가 버튼 스타일 초기화 (배경색 복구)
-    getEl('tabAddFriend').style.backgroundColor = ''; 
-    getEl('tabAddFriend').style.color = '';
-
-    if (tabName === 'all') {
-        getEl('tabAll').classList.add('active');
-        getEl('friendListView').style.display = 'block';
-        loadAllUsers();
-    } else if (tabName === 'pending') {
-        getEl('tabPending').classList.add('active');
-        getEl('friendListView').style.display = 'block';
-        getEl('userListContainer').innerHTML = '<div style="padding:20px; color:#72767d;">대기 중인 요청이 없습니다.</div>';
-    } else if (tabName === 'add') {
-        const btn = getEl('tabAddFriend');
-        btn.classList.add('active');
-        // 친구 추가 탭 활성 시 스타일
-        btn.style.backgroundColor = 'transparent'; 
-        btn.style.color = '#3ba55c';
-        
-        getEl('addFriendView').style.display = 'flex'; // block -> flex로 변경 (중앙정렬 위해)
-        getEl('addFriendView').style.flexDirection = 'column';
-    }
+// === 최근 대화 목록 관리 (LocalStorage 사용) ===
+function getRecentDMs() {
+    if (!currentUser) return [];
+    const key = `recent_dms_${currentUser.uid}`;
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : [];
 }
 
-// === 기타 기능들 (서버, 커뮤니티, 채팅) ===
-// (이전과 동일한 로직입니다)
+function addToRecentDMs(user) {
+    if (!currentUser) return;
+    let list = getRecentDMs();
+    
+    // 이미 있는지 확인 (있으면 제거 후 맨 앞으로 보냄)
+    list = list.filter(u => u.uid !== user.uid);
+    
+    // 맨 앞에 추가
+    list.unshift({
+        uid: user.uid,
+        displayName: user.displayName,
+        photoURL: user.photoURL
+    });
+
+    // 5명 제한
+    if (list.length > 5) {
+        list = list.slice(0, 5);
+    }
+
+    localStorage.setItem(`recent_dms_${currentUser.uid}`, JSON.stringify(list));
+    renderRecentDMs();
+}
+
+function renderRecentDMs() {
+    // 현재 보고 있는 화면이 '홈'이거나 'DM 채팅'일 때만 사이드바 업데이트
+    const sidebarTitle = getEl('sidebarTitle').textContent;
+    if (sidebarTitle !== "다이렉트 메시지") return;
+
+    const list = getRecentDMs();
+    const container = getEl('sidebarContent');
+    
+    let html = `<div class="channel-category">최근 메세지</div>`;
+    
+    list.forEach(u => {
+        // 현재 채팅 중인 사람인지 확인
+        const uids = [currentUser.uid, u.uid].sort();
+        const dmId = `dm_${uids[0]}_${uids[1]}`;
+        const isActive = (currentChatId === dmId);
+        
+        html += `
+            <div class="dm-item ${isActive ? 'active' : ''}" id="dm_item_${u.uid}">
+                <img src="${u.photoURL}">
+                <span class="name">${u.displayName}</span>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+
+    // 클릭 이벤트 연결
+    list.forEach(u => {
+        const item = document.getElementById(`dm_item_${u.uid}`);
+        if(item) {
+            item.onclick = () => startDM(u);
+        }
+    });
+}
+
+
+// === 기능들 ===
+
+async function loadAllUsers() {
+    const q = query(collection(db, "users"));
+    const snapshot = await getDocs(q);
+    const container = getEl('userListContainer');
+    container.innerHTML = '';
+    
+    let count = 0;
+    snapshot.forEach(doc => {
+        const user = doc.data();
+        if (user.uid === currentUser.uid) return;
+        count++;
+        const div = document.createElement('div');
+        div.className = 'user-card';
+        div.innerHTML = `<img src="${user.photoURL}"><div><h4>${user.displayName}</h4></div>`;
+        div.onclick = () => startDM(user);
+        container.appendChild(div);
+    });
+    getEl('userCount').textContent = count;
+}
+
+function startDM(targetUser) {
+    // 1. 최근 대화 목록에 추가 및 저장
+    addToRecentDMs(targetUser);
+
+    const uids = [currentUser.uid, targetUser.uid].sort();
+    const dmId = `dm_${uids[0]}_${uids[1]}`;
+    
+    resetActiveIcons();
+    getEl('homeBtn').classList.add('active');
+    
+    getEl('homeView').style.display = 'none';
+    getEl('communityView').style.display = 'none';
+    getEl('chatView').style.display = 'flex';
+    
+    currentChatId = dmId;
+    getEl('mainHeaderTitle').textContent = targetUser.displayName;
+    getEl('mainHeaderIcon').className = "fas fa-at";
+    getEl('inviteSection').style.display = 'none';
+    
+    // 사이드바 갱신 (active 상태 반영을 위해)
+    renderRecentDMs();
+
+    loadMessages(dmId);
+}
+
+// ... 나머지 커뮤니티, 서버, 메시지 로드 함수들은 기존과 동일 유지 ...
 
 function loadCommunityPosts() {
     if (unsubscribePosts) unsubscribePosts();
     const container = getEl('postsContainer');
     const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-
     unsubscribePosts = onSnapshot(q, (snapshot) => {
         container.innerHTML = '';
         if(snapshot.empty) container.innerHTML = '<div style="color:#72767d; text-align:center; margin-top:20px;">게시글이 없습니다.</div>';
@@ -218,14 +301,12 @@ function loadCommunityPosts() {
         });
     });
 }
-
 function showWriteForm() {
     getEl('postListSection').style.display = 'none';
     getEl('postWriteSection').style.display = 'flex';
     getEl('postTitleInput').value = '';
     getEl('postContentInput').value = '';
 }
-
 async function submitPost() {
     const title = getEl('postTitleInput').value.trim();
     const content = getEl('postContentInput').value.trim();
@@ -235,7 +316,6 @@ async function submitPost() {
     });
     showCommunityView();
 }
-
 function showPostDetail(postId, postData) {
     currentPostId = postId;
     getEl('postListSection').style.display = 'none';
@@ -246,7 +326,6 @@ function showPostDetail(postId, postData) {
     getEl('detailContent').textContent = postData.content;
     loadComments(postId);
 }
-
 function loadComments(postId) {
     if (unsubscribeComments) unsubscribeComments();
     const container = getEl('commentsContainer');
@@ -262,7 +341,6 @@ function loadComments(postId) {
         });
     });
 }
-
 async function submitComment() {
     const text = getEl('commentInput').value.trim();
     if(!text || !currentPostId) return;
@@ -271,7 +349,6 @@ async function submitComment() {
     });
     getEl('commentInput').value = '';
 }
-
 function loadMyServers() {
     if (!currentUser) return;
     const q = query(collection(db, "servers"), where("members", "array-contains", currentUser.uid));
@@ -292,13 +369,11 @@ function loadMyServers() {
         });
     });
 }
-
 async function createServer() {
     const name = getEl('newServerName').value.trim();
     if (!name) return;
     try { await addDoc(collection(db, "servers"), { name, owner: currentUser.uid, members: [currentUser.uid], createdAt: serverTimestamp() }); getEl('serverModal').style.display = 'none'; } catch (e) {}
 }
-
 async function joinServer() {
     const id = getEl('joinServerCode').value.trim();
     if (!id) return;
@@ -308,53 +383,14 @@ async function joinServer() {
         if (snap.exists()) { await updateDoc(ref, { members: arrayUnion(currentUser.uid) }); getEl('serverModal').style.display = 'none'; }
     } catch (e) {}
 }
-
-function copyInviteCode() {
-    navigator.clipboard.writeText(currentChatId).then(() => alert("코드 복사됨"));
-}
-
-async function loadAllUsers() {
-    const q = query(collection(db, "users"));
-    const snapshot = await getDocs(q);
-    const container = getEl('userListContainer');
-    container.innerHTML = '';
-    snapshot.forEach(doc => {
-        const user = doc.data();
-        if (user.uid === currentUser.uid) return;
-        const div = document.createElement('div');
-        div.className = 'user-card';
-        div.innerHTML = `<img src="${user.photoURL}"><div><h4>${user.displayName}</h4></div>`;
-        div.onclick = () => startDM(user);
-        container.appendChild(div);
+function copyInviteCode() { navigator.clipboard.writeText(currentChatId).then(() => alert("코드 복사됨")); }
+function handleSearch(e) {
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll('.user-card').forEach(card => {
+        const name = card.querySelector('h4').innerText.toLowerCase();
+        card.style.display = name.includes(term) ? 'flex' : 'none';
     });
-    getEl('userCount').textContent = snapshot.size - 1;
 }
-
-function startDM(targetUser) {
-    const uids = [currentUser.uid, targetUser.uid].sort();
-    const dmId = `dm_${uids[0]}_${uids[1]}`;
-    
-    resetActiveIcons();
-    getEl('homeBtn').classList.add('active');
-    
-    getEl('homeView').style.display = 'none';
-    getEl('communityView').style.display = 'none';
-    getEl('chatView').style.display = 'flex';
-    
-    currentChatId = dmId;
-    getEl('mainHeaderTitle').textContent = targetUser.displayName;
-    getEl('mainHeaderIcon').className = "fas fa-at";
-    getEl('inviteSection').style.display = 'none';
-    getEl('sidebarContent').innerHTML = `
-        <div class="channel-category">다이렉트 메시지</div>
-        <div class="channel-item active" style="padding:6px 8px; border-radius:4px; color:white; background:#393c43;">
-            <img src="${targetUser.photoURL}" style="width:20px; height:20px; border-radius:50%; vertical-align:middle; margin-right:5px;">
-            ${targetUser.displayName}
-        </div>
-    `;
-    loadMessages(dmId);
-}
-
 function loadMessages(chatId) {
     if (unsubscribeMessages) unsubscribeMessages();
     const container = getEl('messagesContainer');
@@ -372,7 +408,6 @@ function loadMessages(chatId) {
         container.scrollTop = container.scrollHeight;
     });
 }
-
 async function sendMessage() {
     const input = getEl('messageInput');
     const text = input.value.trim();
