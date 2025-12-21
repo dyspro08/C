@@ -168,7 +168,7 @@ body { font-family: 'Roboto', sans-serif; background-color: var(--bg-dark); colo
 /* 말풍선 너비 및 줄바꿈 개선 */
 .message-wrapper .bubble {
     padding: 10px 16px;
-    max-width: 85%; /* 기존 60%에서 85%로 넓힘 */
+    max-width: 100%; /* 기존 60%에서 85%로 넓힘 */
     line-height: 1.5;
     font-size: 15px;
     word-break: break-word; /* 긴 단어나 링크가 있어도 강제로 줄바꿈 */
