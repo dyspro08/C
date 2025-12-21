@@ -1,12 +1,23 @@
-import { initializeApp } from "firebase/app"; 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { 
-    getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged 
-} from "firebase/auth";
+    getAuth, 
+    GoogleAuthProvider, 
+    signInWithPopup, 
+    signOut, 
+    onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { 
-    getFirestore, collection, addDoc, query, orderBy, onSnapshot, 
-    serverTimestamp, setDoc, doc, getDocs 
-} from "firebase/firestore";
-
+    getFirestore, 
+    collection, 
+    addDoc, 
+    query, 
+    orderBy, 
+    onSnapshot, 
+    serverTimestamp, 
+    setDoc, 
+    doc, 
+    getDocs 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 // 1. Firebase 설정
 const firebaseConfig = {
     apiKey: "AIzaSyBw2TJjZYZZPd1piCeoFnAXhqEAcCLe1FE",
