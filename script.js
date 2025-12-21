@@ -18,6 +18,7 @@ import {
     doc, 
     getDocs 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 // 1. Firebase 설정
 const firebaseConfig = {
     apiKey: "AIzaSyBw2TJjZYZZPd1piCeoFnAXhqEAcCLe1FE",
