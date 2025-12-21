@@ -303,11 +303,48 @@ function loadCommunityPosts() {
     });
 }
 function showWriteForm() { getEl('postListSection').style.display = 'none'; getEl('postWriteSection').style.display = 'flex'; getEl('postTitleInput').value=''; getEl('postContentInput').value=''; }
+// 기존 submitPost 함수를 이걸로 교체하세요
 async function submitPost() {
-    const title = getEl('postTitleInput').value.trim(); const content = getEl('postContentInput').value.trim();
-    if(!title||!content) return;
-    await addDoc(collection(db, "posts"), { title, content, authorUid: currentUser.uid, authorName: currentUser.displayName, createdAt: serverTimestamp() });
-    showCommunityView();
+    const titleInput = getEl('postTitleInput');
+    const contentInput = getEl('postContentInput');
+    
+    const title = titleInput.value.trim();
+    const content = contentInput.value.trim();
+
+    // 1. 입력값이 없을 때 사용자에게 알림
+    if (!title || !content) {
+        alert("제목과 내용을 모두 입력해주세요.");
+        return;
+    }
+
+    const submitBtn = getEl('submitPostBtn');
+    submitBtn.disabled = true; // 중복 클릭 방지
+    submitBtn.innerText = "등록 중...";
+
+    try {
+        // 2. 데이터 저장 시도
+        await addDoc(collection(db, "posts"), {
+            title: title,
+            content: content,
+            authorUid: currentUser.uid,
+            authorName: currentUser.displayName,
+            createdAt: serverTimestamp()
+        });
+
+        // 3. 성공 시 초기화 및 이동
+        alert("게시글이 등록되었습니다!");
+        titleInput.value = '';
+        contentInput.value = '';
+        showCommunityView();
+
+    } catch (error) {
+        // 4. 에러 발생 시 (권한 문제 등)
+        console.error("글쓰기 실패:", error);
+        alert("글을 등록하는 중 오류가 발생했습니다.\n" + error.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "등록";
+    }
 }
 function showPostDetail(pid, pdata) {
     currentPostId = pid;
