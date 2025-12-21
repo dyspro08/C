@@ -66,8 +66,10 @@
                 <button id="sidebarTitle">다이렉트 메시지</button>
             </div>
             
-            <div class="channel-list-area" id="channelListArea">
-                <div id="sidebarContent"></div> 
+            <div class="channel-list-area" id="sidebarContent">
+                <div class="channel-category">최근 메세지</div>
+                <div id="recentDmList">
+                    </div>
             </div>
 
             <div class="user-profile-area" id="currentUserProfile">
@@ -78,7 +80,7 @@
                 <div class="profile-icons">
                     <i class="fas fa-microphone"></i>
                     <i class="fas fa-headphones"></i>
-                    <i class="fas fa-cog" id="settingsBtn" title="사용자 설정"></i>
+                    <i class="fas fa-cog" id="settingsBtn" title="설정"></i>
                 </div>
             </div>
         </aside>
@@ -99,37 +101,18 @@
             <div id="homeView" class="view-section active">
                 <div class="tab-bar-container">
                     <div class="tab-bar">
-                        <span class="tab active" id="tabAll">모두</span>
-                        <span class="tab" id="tabPending">대기 중</span>
-                        <span class="tab add-friend" id="tabAddFriend">친구 추가하기</span>
+                        <span class="tab active" style="cursor:default;">모든 사용자</span>
                     </div>
                 </div>
 
                 <div class="content-body">
                     <div id="friendListView">
                         <div class="search-wrapper">
-                            <input type="text" id="userSearchInput" placeholder="친구 검색하기">
+                            <input type="text" id="userSearchInput" placeholder="사용자 검색하기">
                             <i class="fas fa-search"></i>
                         </div>
-                        <div class="friends-label">모든 친구 (<span id="userCount">0</span>)</div>
+                        <div class="friends-label">접속한 사용자 (<span id="userCount">0</span>)</div>
                         <div class="user-grid-container" id="userListContainer"></div>
-                    </div>
-
-                    <div id="addFriendView" style="display:none;">
-                        <div class="add-friend-header">
-                            <h2>친구 추가하기</h2>
-                            <p>Discord 사용자명을 사용하여 친구를 추가할 수 있어요.</p>
-                            
-                            <div class="add-friend-input-box">
-                                <input type="text" placeholder="Discord 사용자명을 사용하여 친구를 추가할 수 있어요.">
-                                <button class="send-request-btn">친구 요청 보내기</button>
-                            </div>
-                        </div>
-                        
-                        <div class="empty-state">
-                            <img src="https://discord.com/assets/e0c782560fd96acd7f01.svg" alt="Wumpus" style="opacity: 0.5; width: 250px;">
-                            <p>친구 요청을 보낼 준비가 되셨나요?</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -146,8 +129,8 @@
 
                 <div id="postWriteSection" class="community-layout" style="display:none;">
                     <div class="write-form">
-                        <input type="text" id="postTitleInput" placeholder="제목을 입력하세요" class="post-input">
-                        <textarea id="postContentInput" placeholder="내용을 입력하세요..." class="post-textarea"></textarea>
+                        <input type="text" id="postTitleInput" placeholder="제목" class="post-input">
+                        <textarea id="postContentInput" placeholder="내용" class="post-textarea"></textarea>
                         <div class="form-buttons">
                             <button id="cancelPostBtn" class="action-btn join">취소</button>
                             <button id="submitPostBtn" class="action-btn create">등록</button>
@@ -168,7 +151,7 @@
                         <h4>댓글</h4>
                         <div id="commentsContainer" class="comments-list"></div>
                         <div class="comment-input-wrapper">
-                            <input type="text" id="commentInput" placeholder="댓글을 남겨보세요">
+                            <input type="text" id="commentInput" placeholder="댓글 작성">
                             <button id="submitCommentBtn"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
@@ -179,9 +162,7 @@
                 <div id="inviteSection" style="display:none; position: absolute; top: 10px; right: 20px; z-index: 20;">
                      <button id="inviteBtn" class="invite-btn">친구 초대하기</button>
                 </div>
-
                 <div class="messages-container" id="messagesContainer"></div>
-
                 <div class="input-area">
                     <div class="input-wrapper">
                         <button class="attach-btn"><i class="fas fa-plus-circle"></i></button>
