@@ -66,6 +66,17 @@ body {
 }
 .sidebar-header button { background: none; border: none; color: white; font-weight: bold; font-size: 16px; cursor: pointer; }
 .channel-list-area { flex: 1; padding: 10px; overflow-y: auto; }
+.channel-category { font-size: 12px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; margin: 10px 0 5px 8px; }
+
+/* DM 리스트 아이템 */
+.dm-item {
+    display: flex; align-items: center; padding: 8px; border-radius: 4px;
+    color: var(--text-muted); cursor: pointer; margin-bottom: 2px;
+}
+.dm-item:hover { background-color: var(--channel-hover); color: var(--text-normal); }
+.dm-item.active { background-color: #393c43; color: white; }
+.dm-item img { width: 32px; height: 32px; border-radius: 50%; margin-right: 10px; }
+.dm-item .name { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* 유저 프로필 */
 .user-profile-area {
@@ -99,38 +110,12 @@ body {
 .tab-bar { display: flex; align-items: center; }
 .tab { margin: 0 4px; padding: 2px 8px; border-radius: 4px; color: var(--interactive-normal); cursor: pointer; font-size: 14px; }
 .tab.active { background-color: #42464d; color: var(--text-header); }
-.tab.add-friend { background-color: var(--green); color: white; }
-.tab.add-friend.active { background: none; color: var(--green); } /* 친구추가 탭 활성시 투명배경+초록글씨 */
 
 /* 컨텐츠 바디 */
 .content-body { flex: 1; overflow-y: auto; padding: 20px 30px; display: flex; flex-direction: column; }
 .search-wrapper { background-color: var(--bg-tertiary); padding: 10px; border-radius: 4px; display: flex; align-items: center; margin-bottom: 20px; }
 .search-wrapper input { background: none; border: none; color: white; flex: 1; outline: none; }
-
-/* === [수정됨] 친구 추가 화면 스타일 (스크린샷 참조) === */
-.add-friend-header h2 { text-transform: uppercase; font-size: 16px; font-weight: bold; color: white; margin-bottom: 8px; }
-.add-friend-header p { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; }
-
-.add-friend-input-box {
-    background-color: rgba(0, 0, 0, 0.1); 
-    border: 1px solid #202225;
-    border-radius: 8px; padding: 0 12px;
-    display: flex; align-items: center; height: 50px;
-    margin-bottom: 20px;
-}
-.add-friend-input-box:focus-within { border-color: var(--brand); }
-.add-friend-input-box input {
-    background: transparent; border: none; color: white; flex: 1; outline: none; font-size: 16px; height: 100%;
-}
-.send-request-btn {
-    background-color: var(--brand); color: white; border: none;
-    padding: 8px 16px; border-radius: 3px; font-size: 14px; font-weight: bold; cursor: pointer;
-    white-space: nowrap;
-}
-.empty-state {
-    flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-    color: var(--text-muted); margin-top: 40px;
-}
+.friends-label { margin-bottom: 10px; font-size: 12px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; }
 
 /* 유저 리스트 */
 .user-card { display: flex; align-items: center; padding: 10px; border-radius: 8px; border-top: 1px solid rgba(255,255,255,0.06); cursor: pointer; }
@@ -138,12 +123,9 @@ body {
 .user-card img { width: 32px; height: 32px; border-radius: 50%; margin-right: 12px; }
 .user-card h4 { color: white; font-size: 16px; }
 
-/* === 커뮤니티 스타일 === */
+/* 커뮤니티, 채팅, 모달 등 기존 스타일 유지 */
 .community-layout { padding: 20px; height: 100%; overflow-y: auto; display: flex; flex-direction: column; }
-.post-item {
-    background-color: var(--bg-secondary); padding: 15px; border-radius: 5px; cursor: pointer;
-    border-left: 4px solid var(--bg-secondary); transition: 0.2s; margin-bottom: 10px;
-}
+.post-item { background-color: var(--bg-secondary); padding: 15px; border-radius: 5px; cursor: pointer; border-left: 4px solid var(--bg-secondary); transition: 0.2s; margin-bottom: 10px; }
 .post-item:hover { border-left-color: var(--brand); background-color: #36393f; }
 .post-item h3 { color: var(--text-header); margin-bottom: 5px; font-size: 16px; }
 .post-info { font-size: 12px; color: var(--text-muted); }
@@ -159,36 +141,17 @@ body {
 .comment-input-wrapper button { background: var(--brand); border: none; color: white; padding: 0 15px; border-radius: 4px; cursor: pointer; }
 .back-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; margin-bottom: 15px; font-size: 14px; text-align: left; }
 
-/* === [중요] 채팅 화면 (하단 고정 수정) === */
-#chatView {
-    display: flex; flex-direction: column; height: 100%; position: relative;
-}
-.messages-container { 
-    flex: 1; /* 남은 공간 모두 차지 */
-    overflow-y: auto; 
-    padding: 0 16px;
-    display: flex; flex-direction: column;
-}
+#chatView { display: flex; flex-direction: column; height: 100%; position: relative; }
+.messages-container { flex: 1; overflow-y: auto; padding: 0 16px; display: flex; flex-direction: column; }
 .message { display: flex; margin-top: 17px; }
 .message .avatar { width: 40px; height: 40px; border-radius: 50%; margin-right: 16px; }
 .message .username { font-weight: 500; color: white; margin-right: 6px; }
 .message .timestamp { font-size: 12px; color: var(--text-muted); }
-
-/* 입력창 영역 (화면 최하단) */
-.input-area { 
-    padding: 0 16px 24px; 
-    flex-shrink: 0; /* 줄어들지 않음 */
-    background-color: var(--bg-primary); /* 배경색 지정 */
-    margin-top: auto; /* 위쪽 공간을 밀어냄 */
-}
-.input-wrapper {
-    background-color: var(--input-background); 
-    border-radius: 8px; padding: 11px 16px; display: flex; align-items: center;
-}
+.input-area { padding: 0 16px 24px; flex-shrink: 0; background-color: var(--bg-primary); margin-top: auto; }
+.input-wrapper { background-color: var(--input-background); border-radius: 8px; padding: 11px 16px; display: flex; align-items: center; }
 .input-wrapper input { background: none; border: none; color: white; flex: 1; outline: none; }
 .attach-btn { background: none; border: none; color: #b9bbbe; font-size: 20px; margin-right: 16px; cursor: pointer; }
 
-/* 모달 */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 2000; }
 .modal-box { background: white; width: 440px; border-radius: 5px; color: black; }
 .modal-header { padding: 24px; text-align: center; position: relative; }
