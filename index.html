@@ -74,7 +74,7 @@
                 <img id="myAvatar" src="" class="avatar-small">
                 <div class="user-info">
                     <span id="myName" class="name">...</span>
-                    </div>
+                </div>
                 <div class="profile-icons">
                     <i class="fas fa-microphone"></i>
                     <i class="fas fa-headphones"></i>
@@ -111,28 +111,37 @@
                             <input type="text" id="userSearchInput" placeholder="친구 검색하기">
                             <i class="fas fa-search"></i>
                         </div>
-                        <div class="friends-label">친구 목록 (<span id="userCount">0</span>)</div>
+                        <div class="friends-label">모든 친구 (<span id="userCount">0</span>)</div>
                         <div class="user-grid-container" id="userListContainer"></div>
                     </div>
+
                     <div id="addFriendView" style="display:none;">
                         <div class="add-friend-header">
                             <h2>친구 추가하기</h2>
-                            <p>사용자명으로 친구를 추가할 수 있습니다.</p>
+                            <p>Discord 사용자명을 사용하여 친구를 추가할 수 있어요.</p>
+                            
+                            <div class="add-friend-input-box">
+                                <input type="text" placeholder="Discord 사용자명을 사용하여 친구를 추가할 수 있어요.">
+                                <button class="send-request-btn">친구 요청 보내기</button>
+                            </div>
+                        </div>
+                        
+                        <div class="empty-state">
+                            <img src="https://discord.com/assets/e0c782560fd96acd7f01.svg" alt="Wumpus" style="opacity: 0.5; width: 250px;">
+                            <p>친구 요청을 보낼 준비가 되셨나요?</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div id="communityView" class="view-section" style="display:none;">
-                
                 <div id="postListSection" class="community-layout">
                     <div class="community-actions">
                         <button id="writePostBtn" class="action-btn create" style="width:auto; padding: 8px 20px;">
                             <i class="fas fa-pen"></i> 글쓰기
                         </button>
                     </div>
-                    <div id="postsContainer" class="posts-list">
-                        </div>
+                    <div id="postsContainer" class="posts-list"></div>
                 </div>
 
                 <div id="postWriteSection" class="community-layout" style="display:none;">
@@ -148,7 +157,6 @@
 
                 <div id="postDetailSection" class="community-layout" style="display:none;">
                     <button id="backToListBtn" class="back-btn"><i class="fas fa-arrow-left"></i> 목록으로</button>
-                    
                     <div class="post-detail-card">
                         <h2 id="detailTitle">제목</h2>
                         <div class="post-meta">
@@ -156,7 +164,6 @@
                         </div>
                         <div id="detailContent" class="post-body">내용</div>
                     </div>
-
                     <div class="comment-section">
                         <h4>댓글</h4>
                         <div id="commentsContainer" class="comments-list"></div>
@@ -169,10 +176,12 @@
             </div>
 
             <div id="chatView" class="view-section" style="display:none;">
-                <div id="inviteSection" style="display:none; position:absolute; top:12px; left:250px; z-index:20;">
-                    <button id="inviteBtn" class="invite-btn">친구 초대하기</button>
+                <div id="inviteSection" style="display:none; position: absolute; top: 10px; right: 20px; z-index: 20;">
+                     <button id="inviteBtn" class="invite-btn">친구 초대하기</button>
                 </div>
+
                 <div class="messages-container" id="messagesContainer"></div>
+
                 <div class="input-area">
                     <div class="input-wrapper">
                         <button class="attach-btn"><i class="fas fa-plus-circle"></i></button>
