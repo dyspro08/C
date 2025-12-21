@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hybrid Chat App</title>
+    
     <link rel="stylesheet" href="style.css">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -30,8 +32,8 @@
     </div>
 
     <div class="app-container">
-        <nav class="server-sidebar" id="serverSidebar">
-            <div class="server-icon active" id="homeBtn" title="홈 (친구 목록)"><i class="fas fa-home"></i></div>
+        <nav class="server-sidebar">
+            <div class="server-icon active" id="homeBtn" title="홈"><i class="fas fa-home"></i></div>
             <div class="server-separator"></div>
             <div id="serverList">
                 <div class="server-icon" data-id="general"><i class="fab fa-discord"></i></div>
@@ -45,13 +47,13 @@
             </div>
             
             <div class="channel-group">
-                <div class="group-label">메뉴 / 채널</div>
+                <div class="group-label">메뉴</div>
                 <div id="channelList">
-                    <div class="channel-item active"><i class="fas fa-user-friends"></i> 친구</div>
+                    <div class="channel-item active"><i class="fas fa-user-friends"></i> 친구 목록</div>
                 </div>
             </div>
 
-            <div class="user-profile-area" id="currentUserProfile">
+            <div class="user-profile-area" id="currentUserProfile" style="display:none;">
                 <img id="myAvatar" src="" class="avatar-small">
                 <div class="user-info">
                     <span id="myName" class="name">Guest</span>
@@ -62,12 +64,11 @@
         </aside>
 
         <main class="main-area">
-            
             <div id="homeView" class="view-section active">
                 <header class="chat-header">
                     <h2>친구 / 사용자 찾기</h2>
                     <div class="search-bar">
-                        <input type="text" id="userSearchInput" placeholder="사용자 검색하기...">
+                        <input type="text" id="userSearchInput" placeholder="사용자 검색...">
                         <i class="fas fa-search"></i>
                     </div>
                 </header>
@@ -83,8 +84,7 @@
                     </div>
                 </header>
 
-                <div class="messages-container" id="messagesContainer">
-                    </div>
+                <div class="messages-container" id="messagesContainer"></div>
 
                 <div class="input-area">
                     <div class="input-wrapper">
