@@ -188,29 +188,33 @@ body { font-family: 'Roboto', sans-serif; background-color: var(--bg-dark); colo
 }
 
 /* ================= 수정된 부분 끝 ================= */
-/* [수정] 읽지 않음 뱃지 (프로필/서버 아이콘 우측 상단) */
-.server-icon, 
-.dm-item {
-    position: relative; /* 뱃지 위치 기준점 */
+/* ================= 빨간 점 강제 표시 수정 ================= */
+
+/* 부모 요소 설정: 빨간 점이 밖으로 나가도 잘리지 않게 설정 */
+.dm-item, 
+.server-icon {
+    position: relative !important; /* 기준점 */
+    overflow: visible !important;  /* 점이 잘리지 않게 함 */
 }
 
+/* 빨간 점 디자인 & 위치 */
 .unread-badge {
     position: absolute;
-    top: -3px;       /* 위쪽으로 살짝 뺌 */
-    right: -3px;     /* 오른쪽으로 살짝 뺌 */
+    top: 0px;        /* 위쪽 여백 */
+    left: 25px;      /* 왼쪽에서 25px 떨어짐 (프로필 사진 오른쪽 귀퉁이) */
     width: 12px;
     height: 12px;
-    background-color: #f28b82; /* 빨간색 */
+    background-color: #ff4444; /* 선명한 빨간색 */
+    border: 2px solid var(--bg-sidebar); /* 프로필 사진과 구분되는 테두리 */
     border-radius: 50%;
-    border: 2px solid var(--bg-dark); /* 배경색과 같은 테두리로 '구멍' 효과 */
-    z-index: 10;
+    z-index: 9999;   /* 무조건 맨 위에 표시 */
     display: block;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5); /* 잘 보이게 그림자 추가 */
 }
 
-/* DM 목록에서는 위치 미세 조정 */
-.dm-item .unread-badge {
-    top: 5px;
-    right: 10px;
-    width: 10px;
-    height: 10px;
+/* 서버 아이콘(왼쪽 바)일 때 위치 미세 조정 */
+.server-icon .unread-badge {
+    top: -2px;
+    left: 32px; /* 서버 아이콘은 더 크므로 더 오른쪽으로 */
+    border-color: var(--bg-dark);
 }
