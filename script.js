@@ -45,6 +45,7 @@ let contextMenuServerId = null;
 let unsubscribeMessages = null;
 let unsubscribePosts = null;
 let unsubscribeComments = null;
+let lastMessageTime = 0;
 
 // 유저 목록 메모리 캐싱 (탭 전환 시 재호출 방지)
 let cachedUserList = null; 
@@ -284,41 +285,92 @@ async function uploadToImgBB(file) {
     return data.success ? data.data.url : null;
 }
 
+// [수정] 쿨타임(5초) 및 글자수 제한 적용
 async function sendMessage(textOverride=null, imageUrl=null) {
     const input = getEl('messageInput');
     const text = textOverride !== null ? textOverride : input.value.trim();
+
+    // 1. 내용 없음 체크
     if ((!text && !imageUrl) || !currentChatId) return;
-    await addDoc(collection(db, "chats", currentChatId, "messages"), {
-        text: text||"", imageUrl: imageUrl||null, uid: currentUser.uid, displayName: currentUser.displayName, photoURL: currentUser.photoURL, createdAt: serverTimestamp()
-    });
-    if(!imageUrl) input.value = '';
+
+    // 2. 글자 수 제한 체크 (HTML maxlength가 뚫릴 경우 대비)
+    if (text.length > 200) {
+        alert("메시지는 200자를 넘을 수 없습니다.");
+        return;
+    }
+
+    // 3. 쿨타임 체크 (5초 = 5000ms)
+    const now = Date.now();
+    if (now - lastMessageTime < 5000) {
+        alert("채팅 도배 방지: 5초 뒤에 보낼 수 있습니다.");
+        return;
+    }
+
+    // 메시지 전송
+    try {
+        await addDoc(collection(db, "chats", currentChatId, "messages"), {
+            text: text || "", 
+            imageUrl: imageUrl || null, 
+            uid: currentUser.uid, 
+            displayName: currentUser.displayName, 
+            photoURL: currentUser.photoURL, 
+            createdAt: serverTimestamp()
+        });
+        
+        lastMessageTime = Date.now(); // 전송 성공 시 시간 갱신
+        if(!imageUrl) input.value = '';
+    } catch (e) {
+        console.error("전송 실패:", e);
+    }
 }
 
+// [수정] loadMessages 내부의 DOM 생성 로직 변경
 function loadMessages(chatId) {
     if (unsubscribeMessages) unsubscribeMessages();
     const container = getEl('messagesContainer');
-    
-    // ★ [최적화 2] 쿼리 limit 추가 및 docChanges 사용
-    // 기존: container.innerHTML = '' 후 전체 렌더링 (비효율)
-    // 변경: 초기 로딩 시 최근 75개만 로드 + 변경된 것만 DOM에 추가
     container.innerHTML = ''; 
 
     const q = query(collection(db, "chats", chatId, "messages"), orderBy("createdAt", "asc"), limit(75));
     
     unsubscribeMessages = onSnapshot(q, (snapshot) => {
-        // snapshot.docChanges()는 추가, 수정, 삭제된 문서만 순회합니다.
-        // 첫 로딩 시에는 75개가 'added' 타입으로 들어옵니다.
         snapshot.docChanges().forEach((change) => {
             if (change.type === "added") {
                 const msg = change.doc.data();
                 const isMe = msg.uid === currentUser.uid;
+                
+                // [추가] 시간 포맷팅 (DB에 데이터가 있으면 변환, 방금 보낸건 현재시간)
+                let timeStr = "";
+                if (msg.createdAt) {
+                    const date = msg.createdAt.toDate ? msg.createdAt.toDate() : new Date();
+                    timeStr = date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+                }
+
+                // [추가] 알림 기능: 내가 보낸 게 아니고, 현재 창이 포커스가 아닐 때 제목 변경
+                if (!isMe && document.hidden) {
+                    document.title = "🔴 새 메시지!";
+                } else {
+                    document.title = "Chat App";
+                }
+
                 let contentHtml = '';
                 if(msg.imageUrl) contentHtml += `<img src="${msg.imageUrl}" class="chat-image" onclick="window.open(this.src)">`;
                 if(msg.text) contentHtml += `<div>${msg.text}</div>`;
                 
                 const wrapper = document.createElement('div');
                 wrapper.className = `message-wrapper ${isMe?'me':'other'}`;
-                wrapper.innerHTML = isMe ? `<div class="bubble">${contentHtml}</div>` : `<img src="${msg.photoURL}" class="avatar"><div class="bubble-group"><span class="meta">${msg.displayName}</span><div class="bubble">${contentHtml}</div></div>`;
+                
+                // [수정] HTML 구조에 msg-time 추가
+                // 내가 보낸 메시지는 flex order로 인해 시간이 왼쪽, 상대방은 오른쪽에 뜸
+                wrapper.innerHTML = isMe 
+                    ? `<span class="msg-time">${timeStr}</span><div class="bubble">${contentHtml}</div>` 
+                    : `<img src="${msg.photoURL}" class="avatar">
+                       <div class="bubble-group">
+                           <span class="meta">${msg.displayName}</span>
+                           <div style="display:flex; align-items:flex-end;">
+                               <div class="bubble">${contentHtml}</div>
+                               <span class="msg-time">${timeStr}</span>
+                           </div>
+                       </div>`;
                 
                 container.appendChild(wrapper);
             }
