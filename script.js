@@ -245,14 +245,17 @@ function loadMyServers() {
 }
 
 // === [수정] DM 목록 + 뱃지 로직 강화 ===
+// === [수정] 최근 대화(DM) 목록 + 프로필 사진 위 빨간 점 ===
 function loadRecentChats() {
     if (!currentUser) return;
     if (unsubscribeChatList) unsubscribeChatList();
 
     const container = getEl('sidebarContent');
+    // 내가 속한 채팅방을 시간순으로 가져옴
     const q = query(collection(db, "chats"), where("members", "array-contains", currentUser.uid), orderBy("lastMessageTime", "desc"));
 
     unsubscribeChatList = onSnapshot(q, (snapshot) => {
+        // 현재 사이드바가 '대화(홈)' 탭일 때만 렌더링
         if(getEl('sidebarTitle').textContent !== "대화") return;
 
         let html = `<div class="channel-category">최근 대화</div>`;
@@ -261,28 +264,35 @@ function loadRecentChats() {
             const data = docSnap.data();
             const chatId = docSnap.id;
             
-            let otherUser = { displayName: "알 수 없음", photoURL: "" };
+            // 상대방 정보 찾기
+            let otherUser = { displayName: "알 수 없음", photoURL: "https://via.placeholder.com/32" };
             if (data.participantData) {
                 const otherUid = Object.keys(data.participantData).find(uid => uid !== currentUser.uid);
-                if(otherUid) otherUser = data.participantData[otherUid];
-            } else { return; } 
+                if(otherUid && data.participantData[otherUid]) {
+                    otherUser = data.participantData[otherUid];
+                }
+            }
 
+            // --- [핵심] 빨간 점 계산 로직 ---
             const lastMsgTime = data.lastMessageTime?.toDate()?.getTime() || 0;
             const myReadTime = data[`lastRead_${currentUser.uid}`]?.toDate()?.getTime() || 0;
-            const lastSender = data.lastMessageSenderId || ""; // 없는 경우 빈 문자열 처리
+            const lastSender = data.lastMessageSenderId || ""; 
 
-            // [조건 강화]
+            // 1. 메시지 시간이 내 읽은 시간보다 미래이고
+            // 2. 보낸 사람이 내가 아니고
+            // 3. 현재 보고 있는 방이 아닐 때
             const isUnread = (lastMsgTime > myReadTime) && (lastSender !== currentUser.uid);
             const isActive = (currentChatId === chatId);
-
-            // 현재 보고 있는 채팅방이면 무조건 뱃지 숨김 (&& !isActive)
             const showBadge = isUnread && !isActive;
-            
+            // ----------------------------------
+
             html += `
             <div class="dm-item ${isActive?'active':''}" id="chat_item_${chatId}">
-                <img src="${otherUser.photoURL || 'https://via.placeholder.com/32'}">
+                <div class="dm-avatar-wrapper">
+                    <img src="${otherUser.photoURL}" class="dm-avatar">
+                    ${showBadge ? '<span class="unread-badge-dm"></span>' : ''} 
+                </div>
                 <span class="name">${otherUser.displayName}</span>
-                ${showBadge ? '<span class="unread-badge"></span>' : ''} 
             </div>`;
         });
         
@@ -301,8 +311,8 @@ function loadRecentChats() {
             const item = getEl(`chat_item_${chatId}`);
             if(item) {
                 item.onclick = () => {
-                    // [즉시 제거] 클릭 시 뱃지 시각적 제거
-                    const badge = item.querySelector('.unread-badge');
+                    // 클릭 즉시 빨간 점 제거 (시각적 효과)
+                    const badge = item.querySelector('.unread-badge-dm');
                     if(badge) badge.remove();
                     
                     if(otherUser) startDM(otherUser);
