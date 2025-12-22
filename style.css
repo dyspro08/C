@@ -129,3 +129,62 @@ body { font-family: 'Roboto', sans-serif; background-color: var(--bg-dark); colo
 .message-wrapper.me .msg-time {
     order: -1; /* 말풍선 왼쪽으로 이동 */
 }
+/* ================= 수정된 부분 시작 ================= */
+
+/* 1. 다크 모드에 어울리는 스크롤바 디자인 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent; /* 배경 투명 */
+}
+::-webkit-scrollbar-thumb {
+    background: #5f6368; /* 다크 테마에 맞는 회색 */
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #8ab4f8; /* 호버 시 브랜드 컬러 */
+}
+
+/* 2. 채팅 입력창이 밀리는 버그 & 말풍선 너비 수정 */
+
+/* 뷰 섹션: 화면 꽉 차게 고정하고 넘치는 것 숨김 */
+.view-section {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* 자식이 넘쳐도 부모 크기 유지 */
+}
+
+/* 메시지 컨테이너: 남은 공간 모두 차지하되, 줄어들 수 있음(min-height:0) */
+.messages-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0; /* 중요: 이 속성이 있어야 스크롤이 내부에서 생김 */
+}
+
+/* 입력창 영역: 크기가 절대 줄어들지 않음 */
+.input-area {
+    padding: 20px;
+    background-color: var(--bg-dark);
+    flex-shrink: 0; /* 중요: 메시지가 많아도 입력창이 찌그러지지 않음 */
+    border-top: 1px solid rgba(255,255,255,0.05); /* 구분선 추가 */
+}
+
+/* 말풍선 너비 및 줄바꿈 개선 */
+.message-wrapper .bubble {
+    padding: 10px 16px;
+    max-width: 85%; /* 기존 60%에서 85%로 넓힘 */
+    line-height: 1.5;
+    font-size: 15px;
+    word-break: break-word; /* 긴 단어나 링크가 있어도 강제로 줄바꿈 */
+    overflow-wrap: anywhere; /* 텍스트 뭉개짐 방지 */
+}
+
+/* ================= 수정된 부분 끝 ================= */
