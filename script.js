@@ -5,7 +5,7 @@ import {
 import { 
     getFirestore, collection, addDoc, query, orderBy, onSnapshot, 
     serverTimestamp, setDoc, doc, getDoc, updateDoc, arrayUnion, arrayRemove, where, getDocs, deleteDoc,
-    enableIndexedDbPersistence, limit 
+    enableIndexedDbPersistence, limit, writeBatch
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -22,17 +22,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ★ [최적화 1] 오프라인 지속성 활성화 (로컬 캐싱)
-// 이미 받은 데이터는 로컬 IndexedDB에 저장하여 서버 읽기 횟수를 획기적으로 줄입니다.
-try {
-    enableIndexedDbPersistence(db).catch((err) => {
-        if (err.code == 'failed-precondition') {
-            console.log('여러 탭이 열려있어 오프라인 지속성이 한 탭에서만 동작합니다.');
-        } else if (err.code == 'unimplemented') {
-            console.log('브라우저가 오프라인 지속성을 지원하지 않습니다.');
-        }
-    });
-} catch(e) { console.log(e); }
+// 오프라인 지속성
+try { enableIndexedDbPersistence(db).catch(() => {}); } catch(e) {}
 
 // ★ ImgBB API Key
 const IMGBB_API_KEY = "ba55d8996626ae2a418e0374ff993157";
@@ -42,13 +33,17 @@ let currentUser = null;
 let currentChatId = null;
 let currentPostId = null;
 let contextMenuServerId = null;
+
+// 리스너 변수들
 let unsubscribeMessages = null;
 let unsubscribePosts = null;
 let unsubscribeComments = null;
-let lastMessageTime = 0;
+let unsubscribeChatList = null; // [NEW] 채팅방 목록 감시용
 
-// 유저 목록 메모리 캐싱 (탭 전환 시 재호출 방지)
+// 유저 목록 캐싱
 let cachedUserList = null; 
+// [NEW] 쿨타임 관리
+let lastMessageTime = 0; 
 
 const getEl = (id) => document.getElementById(id);
 
@@ -78,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     getEl('inviteBtn')?.addEventListener('click', () => navigator.clipboard.writeText(currentChatId).then(() => alert("초대 코드 복사됨")));
 
     // --- 채팅/이미지 ---
-    getEl('sendMsgBtn')?.addEventListener('click', sendMessage);
+    getEl('sendMsgBtn')?.addEventListener('click', () => sendMessage()); // 인자 전달 문제 해결을 위해 래퍼 함수 사용
     getEl('messageInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
     getEl('messageInput')?.addEventListener('paste', handlePasteUpload);
     getEl('attachBtn')?.addEventListener('click', () => getEl('imageInput').click());
@@ -92,6 +87,11 @@ document.addEventListener('DOMContentLoaded', () => {
     getEl('submitCommentBtn')?.addEventListener('click', submitComment);
 
     getEl('userSearchInput')?.addEventListener('input', handleSearch);
+
+    // 탭 복귀 시 제목 초기화
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) document.title = "Chat App";
+    });
 });
 
 // === 로그인 및 초기화 ===
@@ -109,19 +109,18 @@ onAuthStateChanged(auth, async (user) => {
         getEl('myAvatar').src = user.photoURL;
         getEl('myName').textContent = displayName;
         
-        // ★ [최적화] 불필요한 쓰기 방지를 위해 마지막 로그인 시간 등은 필요한 경우에만 업데이트 하거나
-        // 여기서는 유지하되, 전체적인 읽기 최적화에 집중합니다.
         await setDoc(doc(db, "users", user.uid), {
             uid: user.uid, displayName, email: user.email, photoURL: user.photoURL, lastLogin: serverTimestamp()
         }, { merge: true });
 
         loadMyServers();
-        renderRecentDMs();
+        loadRecentChats(); // [NEW] 실시간 채팅방 목록 로드
         showHomeView();
     } else {
         currentUser = null;
-        cachedUserList = null; // 로그아웃 시 캐시 초기화
+        cachedUserList = null;
         getEl('loginOverlay').style.display = 'flex';
+        if(unsubscribeChatList) unsubscribeChatList(); // 로그아웃 시 리스너 해제
     }
 });
 
@@ -149,11 +148,11 @@ function showHomeView() {
     getEl('sidebarTitle').textContent = "대화";
     getEl('inviteBtn').style.display = 'none';
     
-    // 리스너 정리 (채팅방, 게시판에서 나왔으므로)
+    currentChatId = null; // 채팅방 나감 처리
+
     if(unsubscribeMessages) { unsubscribeMessages(); unsubscribeMessages = null; }
     if(unsubscribePosts) { unsubscribePosts(); unsubscribePosts = null; }
 
-    renderRecentDMs();
     loadAllUsers();
 }
 
@@ -164,10 +163,10 @@ function showCommunityView() {
     getEl('chatView').style.display = 'none';
     getEl('communityView').style.display = 'flex';
     
-    // 채팅 리스너 해제
+    currentChatId = null;
+
     if(unsubscribeMessages) { unsubscribeMessages(); unsubscribeMessages = null; }
     
-    // 커뮤니티 초기화
     getEl('postListSection').style.display = 'flex';
     getEl('postWriteSection').style.display = 'none';
     getEl('postDetailSection').style.display = 'none';
@@ -211,36 +210,10 @@ function loadMyServers() {
     });
 }
 
-function enterServerChat(serverId, serverName) {
-    currentChatId = serverId;
-    getEl('homeView').style.display = 'none';
-    getEl('communityView').style.display = 'none';
-    getEl('chatView').style.display = 'flex';
-    getEl('mainHeaderTitle').textContent = serverName;
-    getEl('mainHeaderIcon').className = "fas fa-users";
-    getEl('sidebarTitle').textContent = serverName;
-    getEl('inviteBtn').style.display = 'block';
-    getEl('sidebarContent').innerHTML = `<div class="channel-category">채널</div><div class="dm-item active"><i class="fas fa-hashtag"></i> 일반</div>`;
-    
-    // 게시판 리스너 해제
-    if(unsubscribePosts) { unsubscribePosts(); unsubscribePosts = null; }
-    
-    loadMessages(serverId);
-}
-
-async function leaveServerFromContext() {
-    if (!contextMenuServerId || !currentUser) return;
-    if (!confirm("서버에서 나가시겠습니까?")) return;
-    try {
-        await updateDoc(doc(db, "servers", contextMenuServerId), { members: arrayRemove(currentUser.uid) });
-        if(currentChatId === contextMenuServerId) showHomeView();
-        alert("나갔습니다.");
-    } catch (e) { alert("오류"); }
-}
-
 async function createServer() {
     const name = getEl('newServerName').value.trim();
     if (!name) return;
+    // 서버 생성 시 채팅방 메타데이터도 같이 생성 (간소화)
     await addDoc(collection(db, "servers"), { name, owner: currentUser.uid, members: [currentUser.uid], createdAt: serverTimestamp() });
     getEl('serverModal').style.display = 'none';
 }
@@ -252,7 +225,149 @@ async function joinServer() {
     if(snap.exists()) { await updateDoc(ref, { members: arrayUnion(currentUser.uid) }); getEl('serverModal').style.display = 'none'; }
 }
 
-// === 채팅 & 이미지 ===
+// === [NEW] 실시간 채팅방 목록 (빨간 점 구현의 핵심) ===
+function loadRecentChats() {
+    if (!currentUser) return;
+    if (unsubscribeChatList) unsubscribeChatList();
+
+    const container = getEl('sidebarContent');
+    // 'chats' 컬렉션 중 내가 멤버('members')로 포함된 방을 찾음
+    // 주의: servers에 있는 채팅방도 로직 통일을 위해 chats/{serverId} 문서가 필요할 수 있음
+    // 여기서는 DM 위주로 처리하고, 서버 채팅은 목록에 따로 뜨지 않으므로 패스
+    
+    // DM 채팅방은 members 필드를 가지고 있어야 함.
+    const q = query(collection(db, "chats"), where("members", "array-contains", currentUser.uid), orderBy("lastMessageTime", "desc"));
+
+    unsubscribeChatList = onSnapshot(q, (snapshot) => {
+        // 사이드바 타이틀이 '대화'일 때만 렌더링
+        if(getEl('sidebarTitle').textContent !== "대화") return;
+
+        let html = `<div class="channel-category">최근 대화</div>`;
+        
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            const chatId = docSnap.id;
+            
+            // 상대방 정보 찾기 (1:1 DM 가정)
+            let otherUser = { displayName: "알 수 없음", photoURL: "" };
+            if (data.participantData) {
+                // 내 UID가 아닌 다른 사람의 키를 찾음
+                const otherUid = Object.keys(data.participantData).find(uid => uid !== currentUser.uid);
+                if(otherUid) otherUser = data.participantData[otherUid];
+            } else {
+                // 데이터가 없으면 기존 방식(ID 파싱) 시도
+                return; // 마이그레이션 안된 데이터는 스킵
+            }
+
+            // [핵심] 읽지 않음 판별
+            // lastMessageTime(마지막 대화 시간) > lastRead_{내UID} (내가 읽은 시간)
+            const lastMsgTime = data.lastMessageTime?.toDate()?.getTime() || 0;
+            const myReadTime = data[`lastRead_${currentUser.uid}`]?.toDate()?.getTime() || 0;
+            const hasUnread = lastMsgTime > myReadTime;
+            
+            const isActive = (currentChatId === chatId);
+            
+            html += `
+            <div class="dm-item ${isActive?'active':''} ${hasUnread?'has-unread':''}" id="chat_item_${chatId}">
+                <img src="${otherUser.photoURL || 'https://via.placeholder.com/32'}">
+                <span class="name">${otherUser.displayName}</span>
+                ${hasUnread ? '<span class="unread-dot"></span>' : ''}
+            </div>`;
+        });
+        
+        container.innerHTML = html;
+
+        // 클릭 이벤트 연결
+        snapshot.forEach(docSnap => {
+            const chatId = docSnap.id;
+            const data = docSnap.data();
+             // 상대방 찾기 로직 동일
+            let otherUser = null;
+            if (data.participantData) {
+                const otherUid = Object.keys(data.participantData).find(uid => uid !== currentUser.uid);
+                if(otherUid) otherUser = { uid: otherUid, ...data.participantData[otherUid] };
+            }
+
+            if(getEl(`chat_item_${chatId}`)) {
+                getEl(`chat_item_${chatId}`).onclick = () => {
+                    if(otherUser) startDM(otherUser);
+                    else enterServerChat(chatId, "채팅방"); // Fallback
+                };
+            }
+        });
+    });
+}
+
+// === 채팅 진입 및 읽음 처리 ===
+
+function enterServerChat(serverId, serverName) {
+    currentChatId = serverId;
+    getEl('homeView').style.display = 'none';
+    getEl('communityView').style.display = 'none';
+    getEl('chatView').style.display = 'flex';
+    getEl('mainHeaderTitle').textContent = serverName;
+    getEl('mainHeaderIcon').className = "fas fa-users";
+    getEl('sidebarTitle').textContent = serverName;
+    getEl('inviteBtn').style.display = 'block';
+    getEl('sidebarContent').innerHTML = `<div class="channel-category">채널</div><div class="dm-item active"><i class="fas fa-hashtag"></i> 일반</div>`;
+    
+    if(unsubscribePosts) { unsubscribePosts(); unsubscribePosts = null; }
+    
+    loadMessages(serverId);
+    markAsRead(serverId); // [NEW] 들어왔으니 읽음 처리
+}
+
+async function startDM(targetUser) {
+    // DM ID 생성
+    const uids = [currentUser.uid, targetUser.uid].sort();
+    const dmId = `dm_${uids[0]}_${uids[1]}`;
+    
+    // [NEW] 채팅방 문서가 없으면 생성 (메타데이터 저장)
+    const chatRef = doc(db, "chats", dmId);
+    const chatSnap = await getDoc(chatRef);
+    
+    if (!chatSnap.exists()) {
+        await setDoc(chatRef, {
+            members: uids,
+            participantData: {
+                [currentUser.uid]: { displayName: currentUser.displayName, photoURL: currentUser.photoURL },
+                [targetUser.uid]: { displayName: targetUser.displayName, photoURL: targetUser.photoURL }
+            },
+            createdAt: serverTimestamp(),
+            lastMessageTime: serverTimestamp(),
+            [`lastRead_${currentUser.uid}`]: serverTimestamp(),
+            [`lastRead_${targetUser.uid}`]: serverTimestamp()
+        });
+    }
+
+    resetActiveIcons();
+    getEl('homeBtn').classList.add('active');
+    getEl('homeView').style.display = 'none'; 
+    getEl('communityView').style.display = 'none'; 
+    getEl('chatView').style.display = 'flex';
+    
+    currentChatId = dmId;
+    getEl('mainHeaderTitle').textContent = targetUser.displayName; 
+    getEl('mainHeaderIcon').className = "fas fa-user"; 
+    getEl('inviteBtn').style.display = 'none';
+    
+    if(unsubscribePosts) { unsubscribePosts(); unsubscribePosts = null; }
+    
+    loadMessages(dmId);
+    markAsRead(dmId); // [NEW] 읽음 처리
+}
+
+// [NEW] 읽음 처리 함수
+async function markAsRead(chatId) {
+    if(!currentUser || !chatId) return;
+    const chatRef = doc(db, "chats", chatId);
+    // 내 lastRead 시간을 현재로 업데이트
+    await updateDoc(chatRef, {
+        [`lastRead_${currentUser.uid}`]: serverTimestamp()
+    });
+}
+
+// === 메시지 전송 (Batch Update) ===
 function handlePasteUpload(e) {
     const items = (e.clipboardData || e.originalEvent.clipboardData).items;
     for (let index in items) {
@@ -285,46 +400,53 @@ async function uploadToImgBB(file) {
     return data.success ? data.data.url : null;
 }
 
-// [수정] 쿨타임(5초) 및 글자수 제한 적용
+// [NEW] 메시지 전송 로직 대폭 수정 (Batch 사용)
 async function sendMessage(textOverride=null, imageUrl=null) {
     const input = getEl('messageInput');
     const text = textOverride !== null ? textOverride : input.value.trim();
 
-    // 1. 내용 없음 체크
     if ((!text && !imageUrl) || !currentChatId) return;
-
-    // 2. 글자 수 제한 체크 (HTML maxlength가 뚫릴 경우 대비)
-    if (text.length > 200) {
-        alert("메시지는 200자를 넘을 수 없습니다.");
-        return;
-    }
-
-    // 3. 쿨타임 체크 (5초 = 5000ms)
+    if (text.length > 200) { alert("200자 제한"); return; }
+    
     const now = Date.now();
-    if (now - lastMessageTime < 5000) {
-        alert("채팅 도배 방지: 5초 뒤에 보낼 수 있습니다.");
-        return;
-    }
+    if (now - lastMessageTime < 5000) { alert("도배 방지: 5초 대기"); return; }
+    lastMessageTime = now;
 
-    // 메시지 전송
+    const messageData = {
+        text: text || "", imageUrl: imageUrl || null, 
+        uid: currentUser.uid, displayName: currentUser.displayName, photoURL: currentUser.photoURL, 
+        createdAt: serverTimestamp()
+    };
+
     try {
-        await addDoc(collection(db, "chats", currentChatId, "messages"), {
-            text: text || "", 
-            imageUrl: imageUrl || null, 
-            uid: currentUser.uid, 
-            displayName: currentUser.displayName, 
-            photoURL: currentUser.photoURL, 
-            createdAt: serverTimestamp()
-        });
+        const batch = writeBatch(db);
         
-        lastMessageTime = Date.now(); // 전송 성공 시 시간 갱신
+        // 1. 메시지 컬렉션에 추가
+        const msgRef = doc(collection(db, "chats", currentChatId, "messages"));
+        batch.set(msgRef, messageData);
+
+        // 2. 채팅방 메타데이터(시간, 읽음상태) 업데이트
+        // 나는 방금 보냈으니 읽은 상태, 상대방은 안 읽은 상태가 됨 (상대방 lastRead는 건드리지 않으므로)
+        const chatRef = doc(db, "chats", currentChatId);
+        
+        // 채팅방 정보가 없을 수 있으니 set(merge) 사용
+        batch.set(chatRef, {
+            lastMessageTime: serverTimestamp(), // 전체 방의 최신 시간 갱신
+            recentMessage: text || "(이미지)",   // (옵션) 목록에 미리보기 띄우려면 사용
+            [`lastRead_${currentUser.uid}`]: serverTimestamp(), // 나는 읽음 처리
+            // members 정보도 혹시 모르니 업데이트
+            members: arrayUnion(currentUser.uid)
+        }, { merge: true });
+
+        await batch.commit();
+
         if(!imageUrl) input.value = '';
     } catch (e) {
         console.error("전송 실패:", e);
     }
 }
 
-// [수정] loadMessages 내부의 DOM 생성 로직 변경
+// === 메시지 로드 ===
 function loadMessages(chatId) {
     if (unsubscribeMessages) unsubscribeMessages();
     const container = getEl('messagesContainer');
@@ -338,18 +460,20 @@ function loadMessages(chatId) {
                 const msg = change.doc.data();
                 const isMe = msg.uid === currentUser.uid;
                 
-                // [추가] 시간 포맷팅 (DB에 데이터가 있으면 변환, 방금 보낸건 현재시간)
                 let timeStr = "";
                 if (msg.createdAt) {
                     const date = msg.createdAt.toDate ? msg.createdAt.toDate() : new Date();
                     timeStr = date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
                 }
 
-                // [추가] 알림 기능: 내가 보낸 게 아니고, 현재 창이 포커스가 아닐 때 제목 변경
-                if (!isMe && document.hidden) {
-                    document.title = "🔴 새 메시지!";
-                } else {
-                    document.title = "Chat App";
+                // [NEW] 탭이 비활성화 되어있고 상대방 메시지면 알림
+                if (!isMe && document.hidden) document.title = "🔴 새 메시지!";
+
+                // 내가 메시지를 받고 있고, 채팅창을 보고 있다면 '읽음' 갱신
+                if (!document.hidden && currentChatId === chatId) {
+                   // 너무 자주 갱신하면 안 좋으므로, 필요 시 디바운스(Debounce) 적용 가능
+                   // 여기서는 간단하게 생략하거나, 메시지 받을 때마다 갱신 (비용 조금 듦)
+                   markAsRead(chatId);
                 }
 
                 let contentHtml = '';
@@ -359,8 +483,6 @@ function loadMessages(chatId) {
                 const wrapper = document.createElement('div');
                 wrapper.className = `message-wrapper ${isMe?'me':'other'}`;
                 
-                // [수정] HTML 구조에 msg-time 추가
-                // 내가 보낸 메시지는 flex order로 인해 시간이 왼쪽, 상대방은 오른쪽에 뜸
                 wrapper.innerHTML = isMe 
                     ? `<span class="msg-time">${timeStr}</span><div class="bubble">${contentHtml}</div>` 
                     : `<img src="${msg.photoURL}" class="avatar">
@@ -383,7 +505,6 @@ function loadMessages(chatId) {
 function loadCommunityPosts() {
     if (unsubscribePosts) unsubscribePosts();
     const container = getEl('postsContainer');
-    // ★ [최적화] 게시판도 최근 50개만 불러오기
     const q = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(50));
     
     unsubscribePosts = onSnapshot(q, (snapshot) => {
@@ -417,7 +538,6 @@ function showPostDetail(pid, pdata) {
 function loadComments(pid) {
     if(unsubscribeComments) unsubscribeComments();
     const container = getEl('commentsContainer');
-    // 댓글은 보통 양이 적지만, 그래도 안전하게 limit
     const q = query(collection(db, "posts", pid, "comments"), orderBy("createdAt", "asc"), limit(100));
     unsubscribeComments = onSnapshot(q, (snapshot) => {
         container.innerHTML = '';
@@ -437,59 +557,14 @@ async function submitComment() {
     getEl('commentInput').value = '';
 }
 
-// === DM & 유저 ===
-function startDM(targetUser) {
-    addToRecentDMs(targetUser);
-    const uids = [currentUser.uid, targetUser.uid].sort();
-    const dmId = `dm_${uids[0]}_${uids[1]}`;
-    resetActiveIcons();
-    getEl('homeBtn').classList.add('active');
-    getEl('homeView').style.display = 'none'; getEl('communityView').style.display = 'none'; getEl('chatView').style.display = 'flex';
-    currentChatId = dmId;
-    getEl('mainHeaderTitle').textContent = targetUser.displayName; getEl('mainHeaderIcon').className = "fas fa-user"; getEl('inviteBtn').style.display = 'none';
-    
-    if(unsubscribePosts) { unsubscribePosts(); unsubscribePosts = null; }
-    
-    renderRecentDMs(); loadMessages(dmId);
-}
-function addToRecentDMs(user) {
-    let list = JSON.parse(localStorage.getItem(`recent_dms_${currentUser.uid}`) || "[]");
-    list = list.filter(u => u.uid !== user.uid);
-    list.unshift({ uid: user.uid, displayName: user.displayName, photoURL: user.photoURL });
-    if(list.length > 5) list = list.slice(0, 5);
-    localStorage.setItem(`recent_dms_${currentUser.uid}`, JSON.stringify(list));
-}
-function renderRecentDMs() {
-    if(getEl('sidebarTitle').textContent !== "대화") return;
-    const list = JSON.parse(localStorage.getItem(`recent_dms_${currentUser.uid}`) || "[]");
-    const container = getEl('sidebarContent');
-    let html = `<div class="channel-category">최근 대화</div>`;
-    list.forEach(u => {
-        const uids = [currentUser.uid, u.uid].sort();
-        const isActive = (currentChatId === `dm_${uids[0]}_${uids[1]}`);
-        html += `<div class="dm-item ${isActive?'active':''}" id="dm_item_${u.uid}"><img src="${u.photoURL}"><span class="name">${u.displayName}</span></div>`;
-    });
-    container.innerHTML = html;
-    list.forEach(u => getEl(`dm_item_${u.uid}`).onclick = () => startDM(u));
-}
-
-// ★ [최적화 3] 유저 목록 메모리 캐싱 (탭 이동 시 재호출 방지)
+// === 유저 목록 캐싱 ===
 async function loadAllUsers() {
     const container = getEl('userListContainer');
-    
-    // 캐시된 데이터가 있다면 바로 사용 (읽기 0회)
-    if (cachedUserList) {
-        renderUserList(cachedUserList);
-        return;
-    }
-
+    if (cachedUserList) { renderUserList(cachedUserList); return; }
     const q = query(collection(db, "users"));
     const snapshot = await getDocs(q);
-    
-    // 데이터 캐싱
     cachedUserList = [];
     snapshot.forEach(doc => cachedUserList.push(doc.data()));
-    
     renderUserList(cachedUserList);
 }
 
