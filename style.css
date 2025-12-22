@@ -229,3 +229,57 @@ body { font-family: 'Roboto', sans-serif; background-color: var(--bg-dark); colo
     left: 32px; 
     border-color: var(--bg-dark);
 }
+/* DM 목록 아이템 */
+.dm-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    margin-bottom: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #9aa0a6;
+    transition: 0.2s;
+    position: relative; /* 기준점 */
+}
+
+.dm-item:hover, .dm-item.active {
+    background-color: var(--bg-lighter);
+    color: var(--text-primary);
+}
+
+/* 프로필 사진을 감싸는 래퍼 (기준점 역할을 확실하게 하기 위해) */
+.dm-avatar-wrapper {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+/* 프로필 사진 */
+.dm-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* === DM 전용 빨간 점 디자인 === */
+.unread-badge-dm {
+    position: absolute;
+    bottom: -2px;    /* 사진 오른쪽 아래에 위치 (위로 하려면 top: -2px) */
+    right: -2px;     /* 사진 오른쪽 끝 */
+    width: 12px;
+    height: 12px;
+    background-color: #f28b82; /* 빨간색 */
+    border: 2px solid var(--bg-sidebar); /* 배경색과 같은 테두리로 구멍 뚫린 느낌 */
+    border-radius: 50%;
+    z-index: 10;
+    display: block;
+}
+
+/* 활성화(호버) 상태일 때 테두리 색 변경 (자연스럽게) */
+.dm-item:hover .unread-badge-dm, 
+.dm-item.active .unread-badge-dm {
+    border-color: var(--bg-lighter);
+}
