@@ -32,12 +32,12 @@ let currentChatId = null;
 let currentPostId = null;
 let contextMenuServerId = null;
 
-// 리스너 해제용
+// 리스너 해제용 변수 (화면 이동시 끄기 위함)
 let unsubscribeMessages = null;
 let unsubscribePosts = null;
 let unsubscribeComments = null;
 let unsubscribeChatList = null; 
-let unsubscribeServerList = null; // 서버 목록 감시용 추가
+let unsubscribeServerList = null; 
 
 let cachedUserList = null; 
 let lastMessageTime = 0; 
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     getEl('userSearchInput')?.addEventListener('input', handleSearch);
 });
 
-// === 인증 ===
+// === 인증 로직 ===
 async function handleLogin() {
     try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch (e) { alert("로그인 오류: " + e.message); }
 }
@@ -99,15 +99,17 @@ onAuthStateChanged(auth, async (user) => {
             uid: user.uid, displayName, email: user.email, photoURL: user.photoURL, lastLogin: serverTimestamp()
         }, { merge: true });
 
-        loadMyServers();
-        loadRecentChats(); 
-        showHomeView();
+        // 로그인 직후 홈 화면 로드
+        loadMyServers(); 
+        showHomeView(); 
     } else {
         currentUser = null;
         cachedUserList = null;
         getEl('loginOverlay').style.display = 'flex';
+        // 로그아웃 시 모든 리스너 해제
         if(unsubscribeChatList) unsubscribeChatList();
         if(unsubscribeServerList) unsubscribeServerList();
+        if(unsubscribeMessages) unsubscribeMessages();
     }
 });
 
@@ -119,25 +121,35 @@ function openSettings() {
     getEl('settingsModal').style.display = 'flex';
 }
 
-// === 화면 전환 ===
+// === [핵심 수정] 화면 전환 및 사이드바 초기화 ===
 function resetActiveIcons() {
     document.querySelectorAll('.server-icon').forEach(el => el.classList.remove('active'));
 }
 
 function showHomeView() {
+    // 1. 상태 초기화
     resetActiveIcons();
     getEl('homeBtn').classList.add('active');
+    
+    // 2. 화면 전환
     getEl('homeView').style.display = 'flex';
     getEl('chatView').style.display = 'none';
     getEl('communityView').style.display = 'none';
+    
+    // 3. 헤더 및 사이드바 텍스트 설정
     getEl('mainHeaderTitle').textContent = "홈";
     getEl('mainHeaderIcon').className = "fas fa-home";
     getEl('sidebarTitle').textContent = "대화";
     getEl('inviteBtn').style.display = 'none';
     
+    // 4. 리스너 정리 (다른 화면의 리스너 끄기)
     currentChatId = null;
     if(unsubscribeMessages) { unsubscribeMessages(); unsubscribeMessages = null; }
     if(unsubscribePosts) { unsubscribePosts(); unsubscribePosts = null; }
+    
+    // 5. [중요] 사이드바를 '최근 대화' 모드로 강제 전환 및 로드
+    getEl('sidebarContent').innerHTML = '<div class="channel-category">로딩 중...</div>';
+    loadRecentChats(); 
     loadAllUsers();
 }
 
@@ -149,7 +161,9 @@ function showCommunityView() {
     getEl('communityView').style.display = 'flex';
     
     currentChatId = null;
+    // 채팅 관련 리스너들 끄기
     if(unsubscribeMessages) { unsubscribeMessages(); unsubscribeMessages = null; }
+    if(unsubscribeChatList) { unsubscribeChatList(); unsubscribeChatList = null; } // 사이드바 감시 끄기
     
     getEl('postListSection').style.display = 'flex';
     getEl('postWriteSection').style.display = 'none';
@@ -159,11 +173,12 @@ function showCommunityView() {
     getEl('sidebarTitle').textContent = "커뮤니티";
     getEl('inviteBtn').style.display = 'none';
     
+    // 사이드바를 커뮤니티용으로 교체
     getEl('sidebarContent').innerHTML = `<div class="channel-category">게시판</div><div class="dm-item active"><i class="fas fa-list"></i> 자유게시판</div>`;
     loadCommunityPosts();
 }
 
-// === [수정] 서버 목록 + 빨간 점 ===
+// === 서버 목록 로드 (왼쪽 바) ===
 function loadMyServers() {
     if (!currentUser) return;
     if (unsubscribeServerList) unsubscribeServerList();
@@ -179,13 +194,13 @@ function loadMyServers() {
             div.className = 'server-icon';
             div.textContent = server.name.substring(0, 1);
             
-            // [빨간 점 로직] 서버의 마지막 메시지 vs 내가 읽은 시간
+            // [빨간 점 로직]
             const lastMsgTime = server.lastMessageTime?.toDate()?.getTime() || 0;
             const myReadTime = server[`lastRead_${currentUser.uid}`]?.toDate()?.getTime() || 0;
             
             if (lastMsgTime > myReadTime) {
                 const badge = document.createElement('span');
-                badge.className = 'unread-badge'; // CSS 적용
+                badge.className = 'unread-badge'; 
                 div.appendChild(badge);
             }
 
@@ -194,7 +209,7 @@ function loadMyServers() {
             div.onclick = (e) => {
                 resetActiveIcons();
                 div.classList.add('active');
-                // 클릭 시 뱃지 제거 (시각적 처리)
+                // 뱃지 제거
                 const badge = div.querySelector('.unread-badge');
                 if(badge) badge.remove(); 
                 enterServerChat(docSnap.id, server.name);
@@ -212,15 +227,17 @@ function loadMyServers() {
     });
 }
 
-// === [수정] DM 목록 + 빨간 점 ===
+// === [중요 수정] 최근 대화 목록 로드 (홈 화면 사이드바) ===
 function loadRecentChats() {
     if (!currentUser) return;
+    // 기존 리스너가 있다면 끄고 새로 연결 (화면 전환 시 갱신을 위해)
     if (unsubscribeChatList) unsubscribeChatList();
 
     const container = getEl('sidebarContent');
     const q = query(collection(db, "chats"), where("members", "array-contains", currentUser.uid), orderBy("lastMessageTime", "desc"));
 
     unsubscribeChatList = onSnapshot(q, (snapshot) => {
+        // 혹시라도 현재 화면이 홈(대화)이 아니면 업데이트 중단
         if(getEl('sidebarTitle').textContent !== "대화") return;
 
         let html = `<div class="channel-category">최근 대화</div>`;
@@ -233,14 +250,14 @@ function loadRecentChats() {
             if (data.participantData) {
                 const otherUid = Object.keys(data.participantData).find(uid => uid !== currentUser.uid);
                 if(otherUid) otherUser = data.participantData[otherUid];
-            } else { return; }
+            } else { return; } // 데이터 깨진 채팅방 무시
 
+            // 빨간 점 계산
             const lastMsgTime = data.lastMessageTime?.toDate()?.getTime() || 0;
             const myReadTime = data[`lastRead_${currentUser.uid}`]?.toDate()?.getTime() || 0;
             const hasUnread = lastMsgTime > myReadTime;
             const isActive = (currentChatId === chatId);
             
-            // [수정] 뱃지를 HTML 안에 포함
             html += `
             <div class="dm-item ${isActive?'active':''}" id="chat_item_${chatId}">
                 <img src="${otherUser.photoURL || 'https://via.placeholder.com/32'}">
@@ -251,6 +268,7 @@ function loadRecentChats() {
         
         container.innerHTML = html;
 
+        // 클릭 이벤트 연결
         snapshot.forEach(docSnap => {
             const chatId = docSnap.id;
             const data = docSnap.data();
@@ -263,7 +281,6 @@ function loadRecentChats() {
             if(getEl(`chat_item_${chatId}`)) {
                 getEl(`chat_item_${chatId}`).onclick = () => {
                     if(otherUser) startDM(otherUser);
-                    else enterServerChat(chatId, "채팅방");
                 };
             }
         });
@@ -272,19 +289,26 @@ function loadRecentChats() {
 
 function enterServerChat(serverId, serverName) {
     currentChatId = serverId;
+    
+    // 화면 전환
     getEl('homeView').style.display = 'none';
     getEl('communityView').style.display = 'none';
     getEl('chatView').style.display = 'flex';
+    
+    // 헤더 & 사이드바 설정
     getEl('mainHeaderTitle').textContent = serverName;
     getEl('mainHeaderIcon').className = "fas fa-users";
     getEl('sidebarTitle').textContent = serverName;
     getEl('inviteBtn').style.display = 'block';
+    
+    // [중요] 사이드바를 서버 채널로 교체 (DM 리스너 꺼야함)
+    if(unsubscribeChatList) { unsubscribeChatList(); unsubscribeChatList = null; }
     getEl('sidebarContent').innerHTML = `<div class="channel-category">채널</div><div class="dm-item active"><i class="fas fa-hashtag"></i> 일반</div>`;
     
     if(unsubscribePosts) { unsubscribePosts(); unsubscribePosts = null; }
     
     loadMessages(serverId);
-    markAsRead(serverId, true); // 서버용 읽음 처리
+    markAsRead(serverId, true); 
 }
 
 async function startDM(targetUser) {
@@ -310,6 +334,7 @@ async function startDM(targetUser) {
 
     resetActiveIcons();
     getEl('homeBtn').classList.add('active');
+    
     getEl('homeView').style.display = 'none'; 
     getEl('communityView').style.display = 'none'; 
     getEl('chatView').style.display = 'flex';
@@ -319,25 +344,25 @@ async function startDM(targetUser) {
     getEl('mainHeaderIcon').className = "fas fa-user"; 
     getEl('inviteBtn').style.display = 'none';
     
+    // DM 들어갈 때는 sidebarTitle이 여전히 "대화"여야 사이드바 목록이 유지됨
+    getEl('sidebarTitle').textContent = "대화"; 
+    
     if(unsubscribePosts) { unsubscribePosts(); unsubscribePosts = null; }
     
     loadMessages(dmId);
-    markAsRead(dmId, false); // DM용 읽음 처리
+    markAsRead(dmId, false);
 }
 
-// [수정] 읽음 처리 함수 (서버/DM 구분)
+// 읽음 처리 (서버/DM 통합)
 async function markAsRead(chatId, isServer = false) {
     if(!currentUser || !chatId) return;
     
-    // DM이든 서버든 '내가 마지막으로 읽은 시간'을 업데이트
     const updateData = { [`lastRead_${currentUser.uid}`]: serverTimestamp() };
 
     try {
         if (isServer) {
-            // 서버는 servers 컬렉션 업데이트
             await updateDoc(doc(db, "servers", chatId), updateData);
         } else {
-            // DM은 chats 컬렉션 업데이트
             await updateDoc(doc(db, "chats", chatId), updateData);
         }
     } catch(e) { console.log("읽음 처리 실패"); }
@@ -356,7 +381,6 @@ async function leaveServerFromContext() {
 async function createServer() {
     const name = getEl('newServerName').value.trim();
     if (!name) return;
-    // 서버 생성 시 초기값 설정
     await addDoc(collection(db, "servers"), { 
         name, 
         owner: currentUser.uid, 
@@ -375,7 +399,7 @@ async function joinServer() {
     if(snap.exists()) { await updateDoc(ref, { members: arrayUnion(currentUser.uid) }); getEl('serverModal').style.display = 'none'; }
 }
 
-// === 메시지 전송 (핵심 수정) ===
+// === 메시지 전송 로직 ===
 function handlePasteUpload(e) {
     const items = (e.clipboardData || e.originalEvent.clipboardData).items;
     for (let index in items) {
@@ -408,7 +432,6 @@ async function uploadToImgBB(file) {
     return data.success ? data.data.url : null;
 }
 
-// [핵심] 메시지 보내기 (서버/DM 동기화)
 async function sendMessage(textOverride=null, imageUrl=null) {
     const input = getEl('messageInput');
     const text = textOverride !== null ? textOverride : input.value.trim();
@@ -429,22 +452,18 @@ async function sendMessage(textOverride=null, imageUrl=null) {
     try {
         const batch = writeBatch(db);
         
-        // 1. 메시지는 항상 chats/{id}/messages에 저장
         const msgRef = doc(collection(db, "chats", currentChatId, "messages"));
         batch.set(msgRef, messageData);
 
-        // 2. 메타데이터 업데이트 (서버냐 DM이냐에 따라 다름)
         const isServer = !currentChatId.startsWith("dm_");
         
         if (isServer) {
-            // 서버 문서 업데이트 (왼쪽 바 알림용)
             const serverRef = doc(db, "servers", currentChatId);
             batch.update(serverRef, {
                 lastMessageTime: serverTimestamp(),
-                [`lastRead_${currentUser.uid}`]: serverTimestamp() // 나는 읽음 처리
+                [`lastRead_${currentUser.uid}`]: serverTimestamp() 
             });
         } else {
-            // DM 문서 업데이트 (사이드바 알림용)
             const chatRef = doc(db, "chats", currentChatId);
             batch.set(chatRef, {
                 lastMessageTime: serverTimestamp(),
@@ -458,7 +477,6 @@ async function sendMessage(textOverride=null, imageUrl=null) {
         if(!imageUrl) input.value = '';
     } catch (e) {
         console.error("전송 실패:", e);
-        // 서버 문서를 못 찾을 경우 예외처리
         if (e.code === "not-found") alert("채팅방 정보를 찾을 수 없습니다.");
     }
 }
@@ -483,7 +501,6 @@ function loadMessages(chatId) {
                 }
 
                 if (!isMe && document.hidden) document.title = "🔴 새 메시지!";
-                // 보고 있으면 읽음 처리
                 if (!document.hidden && currentChatId === chatId) {
                     const isServer = !chatId.startsWith("dm_");
                     markAsRead(chatId, isServer);
