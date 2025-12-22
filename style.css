@@ -14,63 +14,131 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Roboto', sans-serif; background-color: var(--bg-dark); color: var(--text-primary); height: 100vh; overflow: hidden; display: flex; }
 
-/* 로그인 & 모달 */
-.login-container, .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; display: flex; justify-content: center; align-items: center; }
+body { 
+    font-family: 'Roboto', sans-serif; 
+    background-color: var(--bg-dark); 
+    color: var(--text-primary); 
+    height: 100vh; 
+    overflow: hidden; 
+    display: flex; 
+}
+
+/* === 1. 스크롤바 커스텀 (다크 모드용) === */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #5f6368; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #8ab4f8; }
+
+/* === 2. 로그인 & 모달 === */
+.login-container, .modal-overlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    z-index: 9999; display: flex; justify-content: center; align-items: center; 
+}
 .login-container { background-color: var(--bg-dark); }
 .modal-overlay { background: rgba(0,0,0,0.6); z-index: 2000; }
-.login-box, .modal-box { background-color: var(--bg-sidebar); padding: 40px; border-radius: 24px; text-align: center; width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+
+.login-box, .modal-box { 
+    background-color: var(--bg-sidebar); padding: 40px; border-radius: 24px; 
+    text-align: center; width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); 
+}
 .modal-box { padding: 24px; color: white; }
-.google-btn { background-color: var(--brand-blue); color: var(--bg-dark); border: none; width: 100%; padding: 14px; border-radius: 50px; font-weight: bold; cursor: pointer; }
+
+.google-btn { 
+    background-color: var(--brand-blue); color: var(--bg-dark); border: none; 
+    width: 100%; padding: 14px; border-radius: 50px; font-weight: bold; cursor: pointer; 
+}
+
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.modal-option input { width: 100%; padding: 12px; margin-top: 10px; background: var(--bg-dark); border: 1px solid var(--bg-lighter); color: white; border-radius: 8px; outline: none; }
+.modal-content input { 
+    width: 100%; padding: 12px; margin-top: 10px; background: var(--bg-dark); 
+    border: 1px solid var(--bg-lighter); color: white; border-radius: 8px; outline: none; 
+}
+
 .action-btn { width: 100%; padding: 12px; margin-top: 16px; border: none; font-weight: bold; cursor: pointer; border-radius: 8px; }
-.create { background: var(--brand-blue); color: var(--bg-dark); } .join { background: var(--bg-lighter); color: var(--text-primary); }
+.create { background: var(--brand-blue); color: var(--bg-dark); }
+.join { background: var(--bg-lighter); color: var(--text-primary); }
 .logout-btn { background-color: var(--danger); color: white; }
 .close-btn { background:none; border:none; color: #aaa; font-size: 20px; cursor: pointer; }
+
 .user-detail-view { margin-bottom: 20px; text-align: center; }
 .avatar-large { width: 80px; height: 80px; border-radius: 50%; border: 4px solid var(--bg-lighter); margin-bottom: 10px; }
 
-/* 우클릭 메뉴 */
-.context-menu { position: absolute; background-color: #111214; border: 1px solid var(--bg-lighter); border-radius: 4px; width: 180px; z-index: 9999; padding: 6px 0; display: none; }
+/* === 3. 우클릭 메뉴 === */
+.context-menu { 
+    position: absolute; background-color: #111214; border: 1px solid var(--bg-lighter); 
+    border-radius: 4px; width: 180px; z-index: 9999; padding: 6px 0; display: none; 
+}
 .context-item { padding: 10px 12px; font-size: 14px; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; }
 .context-item:hover { background-color: var(--brand-blue); color: var(--bg-dark); }
-.context-item.delete:hover { background-color: var(--danger); color: white; }
 .context-item i { margin-right: 10px; width: 16px; text-align: center; }
 
-/* 레이아웃 */
+/* === 4. 레이아웃 구조 === */
 .app-container { display: flex; width: 100%; height: 100%; }
-.server-sidebar { width: 72px; background-color: #171717; display: flex; flex-direction: column; align-items: center; padding-top: 16px; overflow-y: auto; flex-shrink: 0; }
-.server-icon { width: 48px; height: 48px; border-radius: 24px; background-color: var(--bg-lighter); display: flex; justify-content: center; align-items: center; margin-bottom: 12px; cursor: pointer; transition: 0.2s; color: var(--text-primary); }
+
+/* 왼쪽 서버 사이드바 */
+.server-sidebar { 
+    width: 72px; background-color: #171717; display: flex; flex-direction: column; 
+    align-items: center; padding-top: 16px; overflow-y: auto; flex-shrink: 0; 
+    position: relative; z-index: 50;
+}
+.server-icon { 
+    width: 48px; height: 48px; border-radius: 24px; background-color: var(--bg-lighter); 
+    display: flex; justify-content: center; align-items: center; margin-bottom: 12px; 
+    cursor: pointer; transition: 0.2s; color: var(--text-primary); 
+    position: relative !important; overflow: visible !important; /* 뱃지 잘림 방지 */
+}
 .server-icon:hover, .server-icon.active { border-radius: 16px; background-color: var(--brand-blue); color: var(--bg-dark); }
 .community-icon { color: var(--green); }
 .community-icon:hover, .community-icon.active { background-color: var(--green); color: var(--bg-dark); }
 .server-separator { width: 32px; height: 1px; background: var(--bg-lighter); margin-bottom: 12px; }
 .add-server { color: var(--brand-blue); background: transparent; border: 1px dashed var(--brand-blue); }
 
-.channel-sidebar { width: 260px; background-color: var(--bg-sidebar); display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid rgba(255,255,255,0.05); }
+/* 중간 채널/DM 사이드바 */
+.channel-sidebar { 
+    width: 260px; background-color: var(--bg-sidebar); display: flex; flex-direction: column; 
+    flex-shrink: 0; border-right: 1px solid rgba(255,255,255,0.05); 
+    position: relative; z-index: 50;
+}
 .sidebar-header { height: 60px; padding: 0 20px; display: flex; align-items: center; font-weight: 500; font-size: 18px; }
 .channel-list-area { flex: 1; padding: 10px; overflow-y: auto; }
 .channel-category { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin: 15px 0 10px 10px; }
-.dm-item { display: flex; align-items: center; padding: 10px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 4px; }
-.dm-item:hover { background-color: rgba(255,255,255,0.05); }
+
+/* DM 목록 아이템 (중요: 빨간 점 위치 기준) */
+.dm-item { 
+    display: flex; align-items: center; padding: 8px 10px; border-radius: 8px; 
+    cursor: pointer; margin-bottom: 2px; color: #9aa0a6; transition: 0.2s;
+    position: relative !important; overflow: visible !important; 
+}
+.dm-item:hover, .dm-item.active { background-color: rgba(255,255,255,0.05); color: var(--text-primary); }
 .dm-item.active { background-color: rgba(138, 180, 248, 0.2); color: var(--brand-blue); }
-.dm-item img { width: 32px; height: 32px; border-radius: 50%; margin-right: 12px; object-fit: cover; }
+
+/* DM 프로필 사진 래퍼 */
+.dm-avatar-wrapper {
+    position: relative !important; width: 32px; height: 32px; margin-right: 12px; 
+    flex-shrink: 0; overflow: visible !important;
+}
+.dm-avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
 
 .user-profile-area { height: 60px; background-color: rgba(0,0,0,0.1); padding: 0 16px; display: flex; align-items: center; flex-shrink: 0; }
 .avatar-small { width: 32px; height: 32px; border-radius: 50%; margin-right: 10px; }
 .user-info { flex: 1; font-size: 14px; font-weight: 500; }
 .profile-icons i { padding: 8px; cursor: pointer; color: var(--text-secondary); border-radius: 50%; }
 
+/* === 5. 메인 영역 === */
 .main-area { flex: 1; display: flex; flex-direction: column; background-color: var(--bg-dark); min-width: 0; position: relative; }
-.view-section { display: flex; flex-direction: column; height: 100%; width: 100%; }
-.main-header { height: 60px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+.main-header { 
+    height: 60px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; 
+    border-bottom: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; position: relative; z-index: 50; 
+}
 .header-left { display: flex; align-items: center; font-size: 18px; font-weight: 500; }
 .header-left i { margin-right: 12px; color: var(--text-secondary); }
 .header-action-btn { background: var(--green); color: var(--bg-dark); border: none; padding: 6px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; }
 
-/* 홈 */
+/* 뷰 섹션 */
+.view-section { display: flex; flex-direction: column; height: 100%; width: 100%; overflow: hidden; }
+
+/* 홈 화면 */
 .content-body { padding: 24px; overflow-y: auto; flex: 1; }
 .search-wrapper { background-color: var(--bg-lighter); padding: 12px 20px; border-radius: 30px; display: flex; align-items: center; margin-bottom: 24px; max-width: 600px; }
 .search-wrapper input { background: none; border: none; color: white; flex: 1; outline: none; margin-left: 10px; }
@@ -79,27 +147,46 @@ body { font-family: 'Roboto', sans-serif; background-color: var(--bg-dark); colo
 .user-card:hover { transform: translateY(-2px); background-color: var(--bg-lighter); }
 .user-card img { width: 40px; height: 40px; border-radius: 50%; margin-right: 12px; }
 
-/* 채팅 */
-.messages-container { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 8px; }
+/* === 6. 채팅 화면 (레이아웃 수정됨) === */
+.messages-container { 
+    flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 8px; 
+    min-height: 0; /* 중요: 입력창 밀림 방지 */
+    z-index: 1;
+}
+
 .message-wrapper { display: flex; width: 100%; margin-bottom: 4px; }
+.message-wrapper .bubble { 
+    padding: 10px 16px; max-width: 100%; line-height: 1.5; font-size: 15px; 
+    word-break: break-word; overflow-wrap: anywhere; 
+}
 .message-wrapper.other .avatar { width: 36px; height: 36px; border-radius: 50%; margin-right: 10px; margin-top: auto; }
-.message-wrapper .bubble { padding: 10px 16px; max-width: 60%; line-height: 1.5; font-size: 15px; }
 .message-wrapper.other .bubble { background-color: var(--bubble-other); color: var(--text-primary); border-radius: 18px 18px 18px 4px; }
+
 .message-wrapper.me { justify-content: flex-end; }
 .message-wrapper.me .bubble { background-color: var(--bubble-me); color: var(--bubble-me-text); border-radius: 18px 18px 4px 18px; }
 .meta { font-size: 11px; color: var(--text-secondary); margin-left: 8px; margin-bottom: 2px; }
 .chat-image { max-width: 200px; border-radius: 10px; display: block; margin-bottom: 5px; cursor: pointer; }
 
-.input-area { padding: 20px; background-color: var(--bg-dark); }
+/* 메시지 시간 */
+.msg-time { font-size: 10px; color: var(--text-secondary); margin: 0 6px; align-self: flex-end; min-width: fit-content; }
+.message-wrapper.me .msg-time { order: -1; }
+
+.input-area { 
+    padding: 20px; background-color: var(--bg-dark); flex-shrink: 0; 
+    border-top: 1px solid rgba(255,255,255,0.05); position: relative; z-index: 50; 
+}
 .input-wrapper { background-color: var(--bg-lighter); border-radius: 24px; padding: 8px 16px; display: flex; align-items: center; }
 .input-wrapper input { background: none; border: none; color: white; flex: 1; outline: none; padding: 8px; }
 .attach-btn, .send-icon-btn { background: none; border: none; color: var(--text-secondary); font-size: 18px; cursor: pointer; padding: 8px; }
 .send-icon-btn { color: var(--brand-blue); }
 
-/* 커뮤니티 */
+/* === 7. 커뮤니티 === */
 .community-layout { padding: 20px; height: 100%; overflow-y: auto; display: flex; flex-direction: column; }
 .community-actions { margin-bottom: 20px; text-align: right; }
-.post-item { background-color: var(--bg-sidebar); padding: 15px; border-radius: 8px; cursor: pointer; border-left: 4px solid var(--bg-sidebar); margin-bottom: 10px; transition: 0.2s; }
+.post-item { 
+    background-color: var(--bg-sidebar); padding: 15px; border-radius: 8px; cursor: pointer; 
+    border-left: 4px solid var(--bg-sidebar); margin-bottom: 10px; transition: 0.2s; 
+}
 .post-item:hover { border-left-color: var(--brand-blue); background-color: var(--bg-lighter); }
 .post-item h3 { margin-bottom: 5px; font-size: 16px; }
 .post-info { font-size: 12px; color: var(--text-secondary); }
@@ -116,217 +203,28 @@ body { font-family: 'Roboto', sans-serif; background-color: var(--bg-dark); colo
 .comment-input-wrapper input { flex: 1; padding: 10px; background: var(--bg-dark); border: none; color: white; border-radius: 4px; }
 .comment-input-wrapper button { background: var(--brand-blue); border: none; color: var(--bg-dark); padding: 0 15px; border-radius: 4px; cursor: pointer; }
 .back-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; margin-bottom: 15px; text-align: left; }
-/* [추가] 메시지 시간 표시 스타일 */
-.msg-time {
-    font-size: 10px;
-    color: var(--text-secondary);
-    margin: 0 6px;
-    align-self: flex-end; /* 말풍선 바닥 라인에 맞춤 */
-    min-width: fit-content;
-}
 
-/* [추가] 내 메시지일 때 시간 위치 조정 */
-.message-wrapper.me .msg-time {
-    order: -1; /* 말풍선 왼쪽으로 이동 */
-}
-/* ================= 수정된 부분 시작 ================= */
+/* === 8. 빨간 점 (Badge) 스타일 === */
 
-/* 1. 다크 모드에 어울리는 스크롤바 디자인 */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-::-webkit-scrollbar-track {
-    background: transparent; /* 배경 투명 */
-}
-::-webkit-scrollbar-thumb {
-    background: #5f6368; /* 다크 테마에 맞는 회색 */
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #8ab4f8; /* 호버 시 브랜드 컬러 */
-}
-
-/* 2. 채팅 입력창이 밀리는 버그 & 말풍선 너비 수정 */
-
-/* 뷰 섹션: 화면 꽉 차게 고정하고 넘치는 것 숨김 */
-.view-section {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    overflow: hidden; /* 자식이 넘쳐도 부모 크기 유지 */
-}
-
-/* 메시지 컨테이너: 남은 공간 모두 차지하되, 줄어들 수 있음(min-height:0) */
-.messages-container {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-height: 0; /* 중요: 이 속성이 있어야 스크롤이 내부에서 생김 */
-}
-
-/* 입력창 영역: 크기가 절대 줄어들지 않음 */
-.input-area {
-    padding: 20px;
-    background-color: var(--bg-dark);
-    flex-shrink: 0; /* 중요: 메시지가 많아도 입력창이 찌그러지지 않음 */
-    border-top: 1px solid rgba(255,255,255,0.05); /* 구분선 추가 */
-}
-
-/* 말풍선 너비 및 줄바꿈 개선 */
-.message-wrapper .bubble {
-    padding: 10px 16px;
-    max-width: 85%; /* 기존 60%에서 85%로 넓힘 */
-    line-height: 1.5;
-    font-size: 15px;
-    word-break: break-word; /* 긴 단어나 링크가 있어도 강제로 줄바꿈 */
-    overflow-wrap: anywhere; /* 텍스트 뭉개짐 방지 */
-}
-
-/* ================= 수정된 부분 끝 ================= */
-/* DM 목록 아이템 설정 (부모 요소) */
-.dm-item {
-    position: relative !important; /* 기준점 */
-    overflow: visible !important;  /* 빨간 점이 밖으로 나가도 보이게 설정 */
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    margin-bottom: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    color: #9aa0a6;
-    transition: 0.2s;
-}
-
-/* 서버 아이콘 설정 */
-.server-icon {
-    position: relative !important;
-    overflow: visible !important;
-}
-
-/* 빨간 점 디자인 */
+/* 서버 아이콘용 뱃지 */
 .unread-badge {
     position: absolute;
-    top: -2px;        /* 위로 살짝 */
-    left: 28px;       /* 오른쪽으로 이동 (프로필 사진 귀퉁이) */
-    width: 12px;
-    height: 12px;
-    background-color: #f28b82; /* 빨간색 */
-    border: 2px solid var(--bg-sidebar); /* 배경색과 같은 테두리 */
+    top: -2px; left: 32px;
+    width: 12px; height: 12px;
+    background-color: var(--danger);
+    border: 2px solid var(--bg-dark);
     border-radius: 50%;
-    z-index: 9999;    /* 무조건 맨 위에 표시 */
-    display: block;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.5); /* 그림자 추가로 잘 보이게 함 */
+    z-index: 9999; display: block;
 }
 
-/* 서버 아이콘에서의 위치 미세 조정 */
-.server-icon .unread-badge {
-    top: -2px;
-    left: 32px; 
-    border-color: var(--bg-dark);
-}
-/* DM 목록 아이템 */
-.dm-item {
-    display: flex;
-    align-items: center;
-    padding: 8px 10px;
-    margin-bottom: 2px;
-    border-radius: 4px;
-    cursor: pointer;
-    color: #9aa0a6;
-    transition: 0.2s;
-    position: relative; /* 기준점 */
-}
-
-.dm-item:hover, .dm-item.active {
-    background-color: var(--bg-lighter);
-    color: var(--text-primary);
-}
-
-/* 프로필 사진을 감싸는 래퍼 (기준점 역할을 확실하게 하기 위해) */
-.dm-avatar-wrapper {
-    position: relative;
-    width: 32px;
-    height: 32px;
-    margin-right: 12px;
-    flex-shrink: 0;
-}
-
-/* 프로필 사진 */
-.dm-avatar {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-/* === DM 전용 빨간 점 디자인 === */
+/* DM용 뱃지 (프로필 사진 우측 하단) */
 .unread-badge-dm {
     position: absolute;
-    bottom: -2px;    /* 사진 오른쪽 아래에 위치 (위로 하려면 top: -2px) */
-    right: -2px;     /* 사진 오른쪽 끝 */
-    width: 12px;
-    height: 12px;
-    background-color: #f28b82; /* 빨간색 */
-    border: 2px solid var(--bg-sidebar); /* 배경색과 같은 테두리로 구멍 뚫린 느낌 */
+    bottom: -2px; right: -2px;
+    width: 10px; height: 10px;
+    background-color: var(--danger);
+    border: 2px solid var(--bg-sidebar);
     border-radius: 50%;
-    z-index: 10;
-    display: block;
-}
-
-/* 활성화(호버) 상태일 때 테두리 색 변경 (자연스럽게) */
-.dm-item:hover .unread-badge-dm, 
-.dm-item.active .unread-badge-dm {
-    border-color: var(--bg-lighter);
-}
-/* DM 목록 아이템 */
-.dm-item {
-    display: flex;
-    align-items: center;
-    padding: 8px 10px;
-    margin-bottom: 2px;
-    border-radius: 4px;
-    cursor: pointer;
-    color: #9aa0a6;
-    transition: 0.2s;
-    position: relative;
-    overflow: visible !important; /* [중요] 삐져나온 빨간 점 보이게 함 */
-}
-
-/* 프로필 사진 래퍼 (기준점) */
-.dm-avatar-wrapper {
-    position: relative !important;
-    width: 32px;
-    height: 32px;
-    margin-right: 12px;
-    flex-shrink: 0;
-    overflow: visible !important; /* [중요] 내부에서도 잘림 방지 */
-}
-
-/* 프로필 사진 */
-.dm-avatar {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
-}
-
-/* === DM 빨간 점 (최종 수정) === */
-.unread-badge-dm {
-    position: absolute;
-    bottom: -2px;    /* 사진 하단 */
-    right: -2px;     /* 사진 우측 */
-    width: 10px;
-    height: 10px;
-    background-color: #f28b82; /* 빨간색 */
-    border: 2px solid var(--bg-sidebar); /* 배경색 테두리 */
-    border-radius: 50%;
-    z-index: 9999;   /* 무조건 맨 위로 */
-    display: block;
-    box-shadow: 0 0 0 1px var(--bg-dark); /* 시인성 높이는 그림자 */
+    z-index: 9999; display: block;
+    box-shadow: 0 0 0 1px var(--bg-dark); /* 시인성 확보 */
 }
