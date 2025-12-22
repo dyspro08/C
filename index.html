@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App - Admin & Channels</title>
+    <title>Chat App Optimized</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -14,6 +14,7 @@
         <div class="login-box">
             <i class="fas fa-comments fa-3x" style="color: #8ab4f8; margin-bottom: 20px;"></i>
             <h2>환영합니다</h2>
+            <p style="color:#aaa; font-size:14px; margin-bottom:20px;">최적화된 채팅 서비스</p>
             <button id="googleLoginBtn" class="google-btn">Google로 로그인</button>
         </div>
     </div>
@@ -22,101 +23,100 @@
         <div class="modal-box">
             <div class="modal-header">
                 <h3>스페이스 만들기</h3>
-                <button class="close-modal-btn"><i class="fas fa-times"></i></button>
+                <button id="closeModalBtn" class="close-btn"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-content">
                 <input type="text" id="newServerName" placeholder="스페이스 이름">
-                <button id="createServerBtn" class="action-btn">생성</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="channelModal" class="modal-overlay" style="display:none;">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3>채널 만들기</h3>
-                <button class="close-modal-btn"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-content">
-                <input type="text" id="newChannelName" placeholder="채널 이름 (예: 일반, 공지)">
-                <button id="createChannelBtn" class="action-btn">생성</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="banModal" class="modal-overlay" style="display:none;">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3 style="color:var(--danger)">유저 차단 (밴)</h3>
-                <button class="close-modal-btn"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-content">
-                <p id="banTargetName">대상: ...</p>
-                <input type="number" id="banDurationInput" placeholder="분 단위 입력 (예: 10)">
-                <button id="confirmBanBtn" class="action-btn" style="background-color:var(--danger)">차단하기</button>
+                <button id="createServerBtn" class="action-btn create-btn">생성</button>
             </div>
         </div>
     </div>
 
     <div class="app-container">
+        
         <nav class="sidebar">
             <div class="sidebar-header">
                 <h3>Space</h3>
                 <button id="openServerModalBtn" class="icon-btn"><i class="fas fa-plus"></i></button>
             </div>
-            
-            <div class="sidebar-content" id="sidebarServerList">
+            <div class="sidebar-content" id="sidebarContent">
                 </div>
-
             <div class="user-profile">
                 <img id="currentUserImg" src="" alt="Profile">
                 <span id="currentUserName">User</span>
-                <span id="adminBadge" class="admin-badge" style="display:none;">ADMIN</span>
                 <button id="logoutBtn" class="icon-btn"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </nav>
 
-        <nav class="channel-sidebar" id="channelSidebar" style="display:none;">
-            <div class="sidebar-header">
-                <h3 id="currentServerTitle">서버 이름</h3>
-                <button id="openChannelModalBtn" class="icon-btn"><i class="fas fa-plus"></i></button>
-            </div>
-            <div class="sidebar-content" id="sidebarChannelList">
-                </div>
-        </nav>
-
         <main class="main-content">
+            
             <div id="welcomeView" class="view-section">
                 <div class="empty-state">
                     <i class="far fa-comments fa-5x"></i>
-                    <h2>채팅을 시작하세요</h2>
-                    <p>스페이스를 선택하고 채널에 입장하세요.</p>
+                    <h2>채팅을 시작해보세요</h2>
+                    <p>왼쪽에서 스페이스를 선택하거나 유저를 클릭하세요.</p>
                 </div>
             </div>
 
             <div id="communityView" class="view-section" style="display:none;">
                 <div class="top-bar">
-                    <h3>커뮤니티</h3>
+                    <h3 id="communityTitle">커뮤니티</h3>
                     <div class="tab-buttons">
                         <button class="tab-btn active" id="tabListBtn">글 목록</button>
                         <button class="tab-btn" id="tabWriteBtn">글쓰기</button>
+                        <button class="tab-btn" id="tabUserListBtn">유저 목록</button>
                     </div>
                 </div>
+
                 <div class="content-scroll-area">
-                    <div id="postListSection"><div id="postsContainer"></div></div>
+                    <div id="postListSection">
+                        <div id="postsContainer"></div>
+                    </div>
+
                     <div id="writePostSection" style="display:none;">
                         <div class="write-form">
                             <input type="text" id="postTitleInput" class="post-input" placeholder="제목">
-                            <textarea id="postContentInput" class="post-textarea" placeholder="내용"></textarea>
-                            <div class="form-buttons"><button id="submitPostBtn" class="action-btn">등록</button></div>
+                            <textarea id="postContentInput" class="post-textarea" placeholder="내용을 입력하세요"></textarea>
+                            <div class="form-buttons">
+                                <button id="submitPostBtn" class="action-btn">등록</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="userListSection" style="display:none;">
+                        <div class="user-list-header">
+                            전체 유저 (<span id="userCount">0</span>명)
+                        </div>
+                        <div id="userListContainer" class="user-grid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="postDetailView" class="view-section" style="display:none;">
+                <div class="top-bar">
+                    <button id="backToCommunityBtn" class="icon-btn"><i class="fas fa-arrow-left"></i></button>
+                    <h3>게시글</h3>
+                </div>
+                <div class="content-scroll-area">
+                    <div class="post-detail-card">
+                        <h2 id="detailTitle">...</h2>
+                        <div class="post-meta"><span id="detailAuthor">...</span> • <span id="detailDate">...</span></div>
+                        <div id="detailContent" class="post-body">...</div>
+                    </div>
+                    <div class="comment-section">
+                        <h4>댓글</h4>
+                        <div id="commentsContainer" class="comments-list"></div>
+                        <div class="comment-input-wrapper">
+                            <input type="text" id="commentInput" placeholder="댓글 작성">
+                            <button id="submitCommentBtn"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div id="chatView" class="view-section" style="display:none;">
-                <div class="chat-header">
-                    <span id="chatHeaderTitle">채팅</span>
+                <div class="chat-header" id="chatHeader" style="padding: 15px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: bold;">
+                    채팅
                 </div>
                 
                 <div class="messages-container" id="messagesContainer"></div>
@@ -125,11 +125,12 @@
                     <div class="input-wrapper">
                         <input type="file" id="imageInput" accept="image/*" style="display: none;">
                         <button class="attach-btn" id="attachBtn"><i class="fas fa-plus"></i></button>
-                        <input type="text" id="messageInput" maxlength="200" placeholder="메시지 입력 (200자 제한)">
+                        <input type="text" id="messageInput" placeholder="메시지 입력 (이미지 붙여넣기 가능)">
                         <button id="sendMsgBtn" class="send-icon-btn"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
+
         </main>
     </div>
 
