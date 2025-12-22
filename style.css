@@ -188,3 +188,18 @@ body { font-family: 'Roboto', sans-serif; background-color: var(--bg-dark); colo
 }
 
 /* ================= 수정된 부분 끝 ================= */
+/* [추가] 읽지 않음 알림 (빨간 점) */
+.unread-dot {
+    width: 10px;
+    height: 10px;
+    background-color: var(--danger); /* 빨간색 */
+    border-radius: 50%;
+    margin-left: auto; /* 오른쪽 끝으로 밀기 */
+    box-shadow: 0 0 5px rgba(242, 139, 130, 0.5);
+    display: block;
+}
+/* 안 읽은 방은 배경을 조금 더 밝게 표시 */
+.dm-item.has-unread {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid var(--danger);
+}
