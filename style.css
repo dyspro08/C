@@ -116,3 +116,16 @@ body { font-family: 'Roboto', sans-serif; background-color: var(--bg-dark); colo
 .comment-input-wrapper input { flex: 1; padding: 10px; background: var(--bg-dark); border: none; color: white; border-radius: 4px; }
 .comment-input-wrapper button { background: var(--brand-blue); border: none; color: var(--bg-dark); padding: 0 15px; border-radius: 4px; cursor: pointer; }
 .back-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; margin-bottom: 15px; text-align: left; }
+/* [추가] 메시지 시간 표시 스타일 */
+.msg-time {
+    font-size: 10px;
+    color: var(--text-secondary);
+    margin: 0 6px;
+    align-self: flex-end; /* 말풍선 바닥 라인에 맞춤 */
+    min-width: fit-content;
+}
+
+/* [추가] 내 메시지일 때 시간 위치 조정 */
+.message-wrapper.me .msg-time {
+    order: -1; /* 말풍선 왼쪽으로 이동 */
+}
