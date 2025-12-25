@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App Optimized</title>
+    <title>Chat App</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -14,7 +14,6 @@
         <div class="login-box">
             <i class="fas fa-comments fa-3x" style="color: #8ab4f8; margin-bottom: 20px;"></i>
             <h2>환영합니다</h2>
-            <p style="color:#aaa; font-size:14px; margin-bottom:20px;">최적화된 채팅 서비스</p>
             <button id="googleLoginBtn" class="google-btn">Google로 로그인</button>
         </div>
     </div>
@@ -27,79 +26,104 @@
             </div>
             <div class="modal-content">
                 <input type="text" id="newServerName" placeholder="스페이스 이름">
-                <button id="createServerBtn" class="action-btn create-btn">생성</button>
+                <button id="createServerBtn" class="action-btn create">만들기</button>
+                <div class="divider"><span>또는</span></div>
+                <input type="text" id="joinServerCode" placeholder="초대 코드">
+                <button id="joinServerBtn" class="action-btn join">참가하기</button>
             </div>
         </div>
     </div>
 
-    <div class="app-container">
-        
-        <nav class="sidebar">
-            <div class="sidebar-header">
-                <h3>Space</h3>
-                <button id="openServerModalBtn" class="icon-btn"><i class="fas fa-plus"></i></button>
+    <div id="settingsModal" class="modal-overlay" style="display:none;">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>설정</h3>
+                <button id="closeSettingsBtn" class="close-btn"><i class="fas fa-times"></i></button>
             </div>
-            <div class="sidebar-content" id="sidebarContent">
+            <div class="modal-content">
+                <div class="user-detail-view">
+                    <img id="settingAvatar" src="" class="avatar-large">
+                    <h4 id="settingName">...</h4>
+                    <p id="settingEmail" style="color:#9aa0a6; font-size:14px; margin-bottom:20px;">...</p>
                 </div>
-            <div class="user-profile">
-                <img id="currentUserImg" src="" alt="Profile">
-                <span id="currentUserName">User</span>
-                <button id="logoutBtn" class="icon-btn"><i class="fas fa-sign-out-alt"></i></button>
+                <button id="modalLogoutBtn" class="action-btn logout-btn">로그아웃</button>
             </div>
+        </div>
+    </div>
+
+    <div id="serverContextMenu" class="context-menu" style="display:none;">
+        <div class="context-item delete" id="contextLeaveServer"><i class="fas fa-sign-out-alt"></i> 서버 나가기</div>
+        <div class="context-item" id="contextCopyId"><i class="fas fa-copy"></i> ID 복사하기</div>
+    </div>
+
+    <div class="app-container">
+        <nav class="server-sidebar">
+            <div class="server-icon active" id="homeBtn" title="홈"><i class="fas fa-home"></i></div>
+            
+            <div class="server-icon community-icon" id="communityBtn" title="커뮤니티"><i class="fas fa-globe"></i></div>
+            
+            <div class="server-separator"></div>
+            <div id="serverListContainer"></div>
+            <div class="server-icon add-server" id="addServerBtn"><i class="fas fa-plus"></i></div>
         </nav>
 
-        <main class="main-content">
+        <aside class="channel-sidebar">
+            <div class="sidebar-header"><span id="sidebarTitle">대화</span></div>
+            <div class="channel-list-area" id="sidebarContent"></div>
+            <div class="user-profile-area">
+                <img id="myAvatar" src="" class="avatar-small">
+                <div class="user-info"><span id="myName">...</span></div>
+                <div class="profile-icons"><i class="fas fa-cog" id="settingsBtn"></i></div>
+            </div>
+        </aside>
+
+        <main class="main-area">
+            <header class="main-header">
+                <div class="header-left">
+                    <i class="fas fa-hashtag" id="mainHeaderIcon"></i>
+                    <h3 id="mainHeaderTitle">홈</h3>
+                </div>
+                <div class="header-right">
+                    <button id="inviteBtn" class="header-action-btn" style="display:none;">초대</button>
+                </div>
+            </header>
             
-            <div id="welcomeView" class="view-section">
-                <div class="empty-state">
-                    <i class="far fa-comments fa-5x"></i>
-                    <h2>채팅을 시작해보세요</h2>
-                    <p>왼쪽에서 스페이스를 선택하거나 유저를 클릭하세요.</p>
+            <div id="homeView" class="view-section active">
+                <div class="content-body">
+                    <div class="search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="userSearchInput" placeholder="사용자 검색">
+                    </div>
+                    <div class="friends-label">접속 중인 사용자 (<span id="userCount">0</span>)</div>
+                    <div class="user-grid-container" id="userListContainer"></div>
                 </div>
             </div>
 
             <div id="communityView" class="view-section" style="display:none;">
-                <div class="top-bar">
-                    <h3 id="communityTitle">커뮤니티</h3>
-                    <div class="tab-buttons">
-                        <button class="tab-btn active" id="tabListBtn">글 목록</button>
-                        <button class="tab-btn" id="tabWriteBtn">글쓰기</button>
-                        <button class="tab-btn" id="tabUserListBtn">유저 목록</button>
+                <div id="postListSection" class="community-layout">
+                    <div class="community-actions">
+                        <button id="writePostBtn" class="header-action-btn" style="background:#8ab4f8; color:#202124;">
+                            <i class="fas fa-pen"></i> 글쓰기
+                        </button>
                     </div>
+                    <div id="postsContainer" class="posts-list"></div>
                 </div>
 
-                <div class="content-scroll-area">
-                    <div id="postListSection">
-                        <div id="postsContainer"></div>
-                    </div>
-
-                    <div id="writePostSection" style="display:none;">
-                        <div class="write-form">
-                            <input type="text" id="postTitleInput" class="post-input" placeholder="제목">
-                            <textarea id="postContentInput" class="post-textarea" placeholder="내용을 입력하세요"></textarea>
-                            <div class="form-buttons">
-                                <button id="submitPostBtn" class="action-btn">등록</button>
-                            </div>
+                <div id="postWriteSection" class="community-layout" style="display:none;">
+                    <div class="write-form">
+                        <input type="text" id="postTitleInput" placeholder="제목" class="post-input">
+                        <textarea id="postContentInput" placeholder="내용" class="post-textarea"></textarea>
+                        <div class="form-buttons">
+                            <button id="cancelPostBtn" class="action-btn join" style="width:auto;">취소</button>
+                            <button id="submitPostBtn" class="action-btn create" style="width:auto;">등록</button>
                         </div>
                     </div>
-
-                    <div id="userListSection" style="display:none;">
-                        <div class="user-list-header">
-                            전체 유저 (<span id="userCount">0</span>명)
-                        </div>
-                        <div id="userListContainer" class="user-grid"></div>
-                    </div>
                 </div>
-            </div>
 
-            <div id="postDetailView" class="view-section" style="display:none;">
-                <div class="top-bar">
-                    <button id="backToCommunityBtn" class="icon-btn"><i class="fas fa-arrow-left"></i></button>
-                    <h3>게시글</h3>
-                </div>
-                <div class="content-scroll-area">
+                <div id="postDetailSection" class="community-layout" style="display:none;">
+                    <button id="backToListBtn" class="back-btn"><i class="fas fa-arrow-left"></i> 목록으로</button>
                     <div class="post-detail-card">
-                        <h2 id="detailTitle">...</h2>
+                        <h2 id="detailTitle">제목</h2>
                         <div class="post-meta"><span id="detailAuthor">...</span> • <span id="detailDate">...</span></div>
                         <div id="detailContent" class="post-body">...</div>
                     </div>
@@ -115,12 +139,7 @@
             </div>
 
             <div id="chatView" class="view-section" style="display:none;">
-                <div class="chat-header" id="chatHeader" style="padding: 15px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: bold;">
-                    채팅
-                </div>
-                
                 <div class="messages-container" id="messagesContainer"></div>
-                
                 <div class="input-area">
                     <div class="input-wrapper">
                         <input type="file" id="imageInput" accept="image/*" style="display: none;">
@@ -130,10 +149,8 @@
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
-
     <script type="module" src="script.js"></script>
 </body>
 </html>
