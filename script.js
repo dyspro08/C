@@ -1,1 +1,620 @@
-const _0x22cd48=_0x1927;(function(_0x178549,_0x487a37){const _0x25f7df={_0x385808:0x22f,_0x4c34f6:0x296,_0x1af7f0:0x290,_0x240749:0x218,_0xc91fd4:0x242,_0x412b98:0x256},_0x296627=_0x1927,_0x663c2b=_0x178549();while(!![]){try{const _0x1fbe22=-parseInt(_0x296627(_0x25f7df._0x385808))/0x1*(parseInt(_0x296627(_0x25f7df._0x4c34f6))/0x2)+parseInt(_0x296627(_0x25f7df._0x1af7f0))/0x3+-parseInt(_0x296627(0x286))/0x4*(parseInt(_0x296627(0x29b))/0x5)+parseInt(_0x296627(0x1f9))/0x6*(-parseInt(_0x296627(_0x25f7df._0x240749))/0x7)+-parseInt(_0x296627(_0x25f7df._0xc91fd4))/0x8*(-parseInt(_0x296627(_0x25f7df._0x412b98))/0x9)+parseInt(_0x296627(0x20b))/0xa+parseInt(_0x296627(0x21f))/0xb;if(_0x1fbe22===_0x487a37)break;else _0x663c2b['push'](_0x663c2b['shift']());}catch(_0x25611e){_0x663c2b['push'](_0x663c2b['shift']());}}}(_0x3078,0x87adc));import{initializeApp}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';import{getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';import{getFirestore,collection,addDoc,query,orderBy,onSnapshot,serverTimestamp,setDoc,doc,getDoc,updateDoc,arrayUnion,arrayRemove,where,getDocs,deleteDoc,enableIndexedDbPersistence,limit,writeBatch}from'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';function _0x3078(){const _0x4f1aed=['change','678WAIpun','originalEvent','toDate','detailDate','photoURL','text','postWriteSection','detailAuthor','<div\x20class=\x22channel-category\x22>게시판</div><div\x20class=\x22dm-item\x20active\x22><i\x20class=\x22fas\x20fa-list\x22></i>\x20자유게시판</div>','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22msg-time\x22>','imageUrl','div','createElement','preventDefault','communityView','</span>\x20•\x20<span>','https://api.imgbb.com/1/upload?key=','submitCommentBtn','10807430LEfzDV','postListSection','chatView','data','serverContextMenu','other','</div>','message','type','joinServerBtn','Chat\x20App','writeText','startsWith','52402RClJkJ','googleLoginBtn','contextLeaveServer','paste','hidden','target','<img\x20src=\x22','173800gbKKRH','messages','homeBtn','push','disabled','chat_item_','kind','input','code','\x22\x20class=\x22avatar\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22bubble-group\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22meta\x22>','success','관리자','</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>','clipboardData','comments','settingAvatar','1RBbbKw','active','scrollHeight','inviteBtn','desc','전송\x20실패:','ba55d8996626ae2a418e0374ff993157','seconds','querySelectorAll','settingName','value','postDetailSection','display','imageInput','displayName','</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','로그인\x20오류:\x20','chat-7e64b.firebaseapp.com','block','6335864jRTFcl','file','\x22><div><h4>','getTime','users','sidebarContent','mainHeaderTitle','contextCopyId','innerHTML','</span></div>','scrollTop','detailTitle','userCount','<div\x20class=\x22comment-header\x22>','.user-card','dm_','server_icon_','toLowerCase','<div>','getAsFile','9ttoXPK','message-wrapper\x20','ko-KR','200자\x20제한','appendChild','uid','toLocaleDateString','image','communityBtn','span','addServerBtn','focus','flex','커뮤니티','fas\x20fa-user','onclick','now','servers','catch','commentInput','</h3><div\x20class=\x22post-info\x22><span>','submitPostBtn','joinServerCode','commit','querySelector','content','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22name\x22>','myAvatar','lastRead_','exists','homeView','title','sendMsgBtn','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22','loginOverlay','<div\x20class=\x22channel-category\x22>최근\x20대화</div>','fas\x20fa-users','pageX','posts','doc','find','detailContent','key','none','writePostBtn','오류:\x20','includes','json','16SYSBpB','settingsModal','lastMessageTime','<div\x20class=\x22channel-category\x22>로딩\x20중...</div>','error','files','chats','</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20style=\x22display:flex;\x20align-items:flex-end;\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22bubble\x22>','AIzaSyBw2TJjZYZZPd1piCeoFnAXhqEAcCLe1FE','.dm-item','1190097CCRaSN','2-digit','<div\x20class=\x22channel-category\x22>채널</div><div\x20class=\x22dm-item\x20active\x22><i\x20class=\x22fas\x20fa-hashtag\x22></i>\x20일반</div>','postContentInput','chat-7e64b.firebasestorage.app','src','474182RwTaEf','clipboard','url','pageY','<span\x20class=\x22msg-time\x22>','808095vdQzsu','asc','log','messagesContainer','name','participantData','append','forEach','trim','length','lastMessageSenderId','backToListBtn','user-card','읽음\x20처리\x20실패','\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>','style','classList','textContent','email','DOMContentLoaded','\x22\x20id=\x22chat_item_','docChanges','authorName','</div><div>','serverModal','myName','post-item','</span><div\x20class=\x22bubble\x22>','toLocaleString','https://via.placeholder.com/32','click','empty','mainHeaderIcon','commentsContainer','addEventListener','userListContainer','POST','members','postTitleInput','&expiration=86400','.unread-badge','채팅방\x20정보를\x20찾을\x20수\x20없습니다.','1094029259482','add','sidebarTitle','added','createdAt','items','className','yudongyun08@gmail.com','left','innerText','getElementById','substring','remove','나갔습니다.','messageInput'];_0x3078=function(){return _0x4f1aed;};return _0x3078();}const firebaseConfig={'apiKey':_0x22cd48(0x28e),'authDomain':_0x22cd48(0x240),'projectId':'chat-7e64b','storageBucket':_0x22cd48(0x294),'messagingSenderId':_0x22cd48(0x1e9),'appId':'1:1094029259482:web:992007326706c5f6bd6be3','measurementId':'G-QMTLBH6TX0'},app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);try{enableIndexedDbPersistence(db)[_0x22cd48(0x268)](()=>{});}catch(_0x166936){}const IMGBB_API_KEY=_0x22cd48(0x235);let currentUser=null,currentChatId=null,currentPostId=null,contextMenuServerId=null,unsubscribeMessages=null,unsubscribePosts=null,unsubscribeComments=null,unsubscribeChatList=null,unsubscribeServerList=null,cachedUserList=null,lastMessageTime=0x0;const getEl=_0x1a95d3=>document[_0x22cd48(0x1f3)](_0x1a95d3);window[_0x22cd48(0x1e1)](_0x22cd48(0x261),()=>{const _0x6caa61={_0x1e9168:0x275,_0x2a76a7:0x217},_0x46e583=_0x22cd48;document[_0x46e583(_0x6caa61._0x1e9168)]=_0x46e583(0x215);if(currentChatId){const _0x2a0c56=!currentChatId[_0x46e583(_0x6caa61._0x2a76a7)]('dm_');markAsRead(currentChatId,_0x2a0c56);}}),document[_0x22cd48(0x1e1)](_0x22cd48(0x2ae),()=>{const _0x271d59={_0x400373:0x21a,_0x267fe2:0x249,_0x16f36e:0x221,_0x4c830f:0x25e,_0x4fc9a7:0x260,_0x524046:0x1e1,_0x536ebe:0x1dd,_0x2e4dd7:0x1dd,_0x4376ed:0x1e1,_0x115f92:0x21b,_0x5ae1a1:0x282,_0x32723a:0x1e1,_0x128ab6:0x1e1},_0x208278={_0x125e1a:0x2aa,_0x10a9b9:0x281},_0x2be2b4={_0x146ca7:0x21d},_0x3509e4={_0x36fa03:0x280},_0x1ab96b={_0x3ed740:0x216},_0x199e25={_0x4de51f:0x23b,_0x3772a9:0x215},_0x5d2884=_0x22cd48;getEl(_0x5d2884(0x219))?.[_0x5d2884(0x1e1)](_0x5d2884(0x1dd),handleLogin),getEl('settingsBtn')?.['addEventListener'](_0x5d2884(0x1dd),openSettings),getEl('closeSettingsBtn')?.[_0x5d2884(0x1e1)]('click',()=>getEl(_0x5d2884(0x287))[_0x5d2884(0x2aa)][_0x5d2884(0x23b)]=_0x5d2884(0x281)),getEl('modalLogoutBtn')?.[_0x5d2884(0x1e1)]('click',()=>{const _0x3eb523=_0x5d2884;signOut(auth),getEl(_0x3eb523(0x287))[_0x3eb523(0x2aa)]['display']=_0x3eb523(0x281);}),document[_0x5d2884(0x1e1)](_0x5d2884(0x1dd),()=>{const _0x5d3f3c=_0x5d2884;getEl('serverContextMenu')[_0x5d3f3c(0x2aa)][_0x5d3f3c(_0x199e25._0x4de51f)]=_0x5d3f3c(0x281),document[_0x5d3f3c(0x275)]=_0x5d3f3c(_0x199e25._0x3772a9);}),getEl(_0x5d2884(_0x271d59._0x400373))?.[_0x5d2884(0x1e1)](_0x5d2884(0x1dd),()=>leaveServerFromContext()),getEl(_0x5d2884(_0x271d59._0x267fe2))?.[_0x5d2884(0x1e1)](_0x5d2884(0x1dd),()=>{const _0x1638c3=_0x5d2884;contextMenuServerId&&(navigator['clipboard'][_0x1638c3(_0x1ab96b._0x3ed740)](contextMenuServerId),alert('ID\x20복사됨'));}),getEl(_0x5d2884(_0x271d59._0x16f36e))?.[_0x5d2884(0x1e1)](_0x5d2884(0x1dd),showHomeView),getEl(_0x5d2884(_0x271d59._0x4c830f))?.['addEventListener']('click',showCommunityView),getEl(_0x5d2884(_0x271d59._0x4fc9a7))?.['addEventListener']('click',()=>getEl('serverModal')['style'][_0x5d2884(0x23b)]='flex'),getEl('closeModalBtn')?.[_0x5d2884(_0x271d59._0x524046)](_0x5d2884(_0x271d59._0x536ebe),()=>getEl(_0x5d2884(0x2b3))[_0x5d2884(0x2aa)][_0x5d2884(0x23b)]=_0x5d2884(0x281)),getEl('createServerBtn')?.[_0x5d2884(0x1e1)](_0x5d2884(_0x271d59._0x2e4dd7),createServer),getEl(_0x5d2884(0x214))?.[_0x5d2884(_0x271d59._0x524046)](_0x5d2884(0x1dd),joinServer),getEl('inviteBtn')?.[_0x5d2884(_0x271d59._0x524046)](_0x5d2884(_0x271d59._0x536ebe),()=>navigator[_0x5d2884(0x297)][_0x5d2884(0x216)](currentChatId)['then'](()=>alert('초대\x20코드\x20복사됨'))),getEl('sendMsgBtn')?.[_0x5d2884(_0x271d59._0x4376ed)](_0x5d2884(0x1dd),()=>sendMessage()),getEl('messageInput')?.[_0x5d2884(0x1e1)]('keypress',_0x2f9cfe=>{const _0x2dea4b=_0x5d2884;if(_0x2f9cfe[_0x2dea4b(_0x3509e4._0x36fa03)]==='Enter')sendMessage();}),getEl(_0x5d2884(0x1f7))?.[_0x5d2884(0x1e1)](_0x5d2884(_0x271d59._0x115f92),handlePasteUpload),getEl('attachBtn')?.[_0x5d2884(0x1e1)](_0x5d2884(0x1dd),()=>getEl('imageInput')[_0x5d2884(0x1dd)]()),getEl(_0x5d2884(0x23c))?.[_0x5d2884(0x1e1)](_0x5d2884(0x1f8),_0x5c3dc4=>{const _0x29f96d=_0x5d2884;if(_0x5c3dc4['target']['files'][0x0])processAndUploadImage(_0x5c3dc4[_0x29f96d(_0x2be2b4._0x146ca7)][_0x29f96d(0x28b)][0x0]);}),getEl(_0x5d2884(_0x271d59._0x5ae1a1))?.[_0x5d2884(0x1e1)](_0x5d2884(_0x271d59._0x536ebe),showWriteForm),getEl('cancelPostBtn')?.[_0x5d2884(_0x271d59._0x32723a)](_0x5d2884(0x1dd),()=>{const _0x1270b6=_0x5d2884;getEl(_0x1270b6(0x1ff))[_0x1270b6(_0x208278._0x125e1a)]['display']=_0x1270b6(_0x208278._0x10a9b9),getEl(_0x1270b6(0x20c))['style'][_0x1270b6(0x23b)]=_0x1270b6(0x262);}),getEl(_0x5d2884(0x26b))?.[_0x5d2884(_0x271d59._0x4376ed)]('click',submitPost),getEl(_0x5d2884(0x2a6))?.[_0x5d2884(_0x271d59._0x4376ed)]('click',showCommunityView),getEl(_0x5d2884(0x20a))?.[_0x5d2884(_0x271d59._0x128ab6)]('click',submitComment),getEl('userSearchInput')?.['addEventListener'](_0x5d2884(0x226),handleSearch);});async function handleLogin(){const _0x339587={_0x17d32e:0x212},_0x1cdd10=_0x22cd48;try{await signInWithPopup(auth,new GoogleAuthProvider());}catch(_0x55eaac){alert(_0x1cdd10(0x23f)+_0x55eaac[_0x1cdd10(_0x339587._0x17d32e)]);}}onAuthStateChanged(auth,async _0x4e342a=>{const _0x5bd4e2={_0x2d93d8:0x2ad,_0xaebd08:0x23b,_0x5619ce:0x271,_0x584ccd:0x295,_0x32671b:0x1d8,_0x31c6d5:0x2ac,_0x2a5242:0x25b,_0x422965:0x2aa,_0x1ffbb7:0x23b,_0x57ef92:0x262},_0x23d4af=_0x22cd48;if(_0x4e342a){let _0x33f6e2=_0x4e342a[_0x23d4af(0x23d)];if(_0x4e342a[_0x23d4af(_0x5bd4e2._0x2d93d8)]===_0x23d4af(0x1f0))_0x33f6e2=_0x23d4af(0x22a);currentUser={..._0x4e342a,'displayName':_0x33f6e2},getEl('loginOverlay')['style'][_0x23d4af(_0x5bd4e2._0xaebd08)]=_0x23d4af(0x281),getEl(_0x23d4af(_0x5bd4e2._0x5619ce))[_0x23d4af(_0x5bd4e2._0x584ccd)]=_0x4e342a['photoURL'],getEl(_0x23d4af(_0x5bd4e2._0x32671b))[_0x23d4af(_0x5bd4e2._0x31c6d5)]=_0x33f6e2,await setDoc(doc(db,'users',_0x4e342a[_0x23d4af(_0x5bd4e2._0x2a5242)]),{'uid':_0x4e342a['uid'],'displayName':_0x33f6e2,'email':_0x4e342a[_0x23d4af(0x2ad)],'photoURL':_0x4e342a['photoURL'],'lastLogin':serverTimestamp()},{'merge':!![]}),loadMyServers(),showHomeView();}else{currentUser=null,cachedUserList=null,getEl(_0x23d4af(0x278))[_0x23d4af(_0x5bd4e2._0x422965)][_0x23d4af(_0x5bd4e2._0x1ffbb7)]=_0x23d4af(_0x5bd4e2._0x57ef92);if(unsubscribeChatList)unsubscribeChatList();if(unsubscribeServerList)unsubscribeServerList();if(unsubscribeMessages)unsubscribeMessages();}});function openSettings(){const _0x1d6378={_0x542538:0x238,_0x1b4e1f:0x23d,_0x58c221:0x287,_0x526092:0x2aa,_0x310f10:0x262},_0x2f0354=_0x22cd48;if(!currentUser)return;getEl(_0x2f0354(0x22e))[_0x2f0354(0x295)]=currentUser[_0x2f0354(0x1fd)],getEl(_0x2f0354(_0x1d6378._0x542538))[_0x2f0354(0x2ac)]=currentUser[_0x2f0354(_0x1d6378._0x1b4e1f)],getEl('settingEmail')['textContent']=currentUser[_0x2f0354(0x2ad)],getEl(_0x2f0354(_0x1d6378._0x58c221))[_0x2f0354(_0x1d6378._0x526092)]['display']=_0x2f0354(_0x1d6378._0x310f10);}function resetActiveIcons(){const _0x1cc49f={_0x524ee0:0x237,_0x1f791c:0x2a2},_0x479ba5=_0x22cd48;document[_0x479ba5(0x237)]('.server-icon')[_0x479ba5(0x2a2)](_0x33eab7=>_0x33eab7['classList']['remove'](_0x479ba5(0x230))),document[_0x479ba5(_0x1cc49f._0x524ee0)](_0x479ba5(0x28f))[_0x479ba5(_0x1cc49f._0x1f791c)](_0x3d4aeb=>_0x3d4aeb[_0x479ba5(0x2ab)][_0x479ba5(0x1f5)](_0x479ba5(0x230)));}function showHomeView(){const _0x30a66c={_0x16bee6:0x221,_0x157b63:0x2ab,_0x379819:0x1ea,_0x2fc8ae:0x230,_0x14e00c:0x2aa,_0x2f2124:0x23b,_0x39eb28:0x281,_0x945f0f:0x207,_0x487342:0x2aa,_0x234771:0x281,_0x911fe9:0x1df,_0x18e736:0x275,_0x12fc6f:0x215,_0x3c801f:0x24a},_0x2647d9=_0x22cd48;resetActiveIcons(),getEl(_0x2647d9(_0x30a66c._0x16bee6))[_0x2647d9(_0x30a66c._0x157b63)][_0x2647d9(_0x30a66c._0x379819)](_0x2647d9(_0x30a66c._0x2fc8ae)),getEl('homeView')[_0x2647d9(_0x30a66c._0x14e00c)]['display']=_0x2647d9(0x262),getEl(_0x2647d9(0x20d))[_0x2647d9(0x2aa)][_0x2647d9(_0x30a66c._0x2f2124)]=_0x2647d9(_0x30a66c._0x39eb28),getEl(_0x2647d9(_0x30a66c._0x945f0f))[_0x2647d9(_0x30a66c._0x487342)][_0x2647d9(0x23b)]=_0x2647d9(_0x30a66c._0x234771),getEl(_0x2647d9(0x248))[_0x2647d9(0x2ac)]='홈',getEl(_0x2647d9(_0x30a66c._0x911fe9))['className']='fas\x20fa-home',getEl(_0x2647d9(0x1eb))['textContent']='대화',getEl('inviteBtn')[_0x2647d9(0x2aa)][_0x2647d9(0x23b)]='none',currentChatId=null,document[_0x2647d9(_0x30a66c._0x18e736)]=_0x2647d9(_0x30a66c._0x12fc6f),unsubscribeMessages&&(unsubscribeMessages(),unsubscribeMessages=null),unsubscribePosts&&(unsubscribePosts(),unsubscribePosts=null),getEl('sidebarContent')[_0x2647d9(_0x30a66c._0x3c801f)]=_0x2647d9(0x289),loadRecentChats(),loadAllUsers();}function showCommunityView(){const _0x1bc4b5={_0x10a816:0x25e,_0x5e8d26:0x1ea,_0x3988dc:0x2aa,_0x2dc9e6:0x23b,_0x3ac471:0x207,_0x56f22a:0x262,_0x38a477:0x20c,_0x2220e4:0x281,_0x101dc0:0x248,_0x130b07:0x2ac,_0x5eef33:0x1eb,_0x58c294:0x2aa,_0x2df1d2:0x23b,_0x52db44:0x247,_0x13607d:0x201},_0x1a0174=_0x22cd48;resetActiveIcons(),getEl(_0x1a0174(_0x1bc4b5._0x10a816))[_0x1a0174(0x2ab)][_0x1a0174(_0x1bc4b5._0x5e8d26)](_0x1a0174(0x230)),getEl('homeView')[_0x1a0174(_0x1bc4b5._0x3988dc)][_0x1a0174(_0x1bc4b5._0x2dc9e6)]='none',getEl('chatView')[_0x1a0174(0x2aa)][_0x1a0174(0x23b)]=_0x1a0174(0x281),getEl(_0x1a0174(_0x1bc4b5._0x3ac471))[_0x1a0174(0x2aa)][_0x1a0174(0x23b)]=_0x1a0174(_0x1bc4b5._0x56f22a),currentChatId=null,document['title']=_0x1a0174(0x215),unsubscribeMessages&&(unsubscribeMessages(),unsubscribeMessages=null),unsubscribeChatList&&(unsubscribeChatList(),unsubscribeChatList=null),getEl(_0x1a0174(_0x1bc4b5._0x38a477))[_0x1a0174(0x2aa)]['display']=_0x1a0174(0x262),getEl('postWriteSection')['style'][_0x1a0174(0x23b)]=_0x1a0174(0x281),getEl('postDetailSection')[_0x1a0174(_0x1bc4b5._0x3988dc)]['display']=_0x1a0174(_0x1bc4b5._0x2220e4),getEl(_0x1a0174(_0x1bc4b5._0x101dc0))[_0x1a0174(_0x1bc4b5._0x130b07)]='자유게시판',getEl(_0x1a0174(_0x1bc4b5._0x5eef33))['textContent']=_0x1a0174(0x263),getEl(_0x1a0174(0x232))[_0x1a0174(_0x1bc4b5._0x58c294)][_0x1a0174(_0x1bc4b5._0x2df1d2)]=_0x1a0174(0x281),getEl(_0x1a0174(_0x1bc4b5._0x52db44))[_0x1a0174(0x24a)]=_0x1a0174(_0x1bc4b5._0x13607d),loadCommunityPosts();}function loadMyServers(){const _0x440bc1={_0x2b12de:0x25b},_0x489aec={_0x360c83:0x2a2},_0x20675=_0x22cd48;if(!currentUser)return;if(unsubscribeServerList)unsubscribeServerList();const _0x4434a9=query(collection(db,_0x20675(0x267)),where('members','array-contains',currentUser[_0x20675(_0x440bc1._0x2b12de)]));unsubscribeServerList=onSnapshot(_0x4434a9,_0x598159=>{const _0x24db9b={_0x15c95e:0x205,_0x1c2858:0x204,_0x495dc0:0x1ef,_0x138d05:0x272,_0x3046d2:0x25b,_0x2c19e3:0x2ab},_0x1efdfa={_0x59084c:0x2ab,_0x316bcb:0x1e7,_0x24b6c3:0x1f5,_0x23427d:0x29f},_0x29ec9a=_0x20675,_0x1564dc=getEl('serverListContainer');_0x1564dc['innerHTML']='',_0x598159[_0x29ec9a(_0x489aec._0x360c83)](_0x5212e4=>{const _0x2d3526={_0x5a27ad:0x206,_0x2e1456:0x20f,_0x43a00d:0x23b,_0x48968c:0x241,_0x5e73a2:0x1f1,_0x3659cd:0x27b},_0x3279a4=_0x29ec9a,_0x2e7852=_0x5212e4[_0x3279a4(0x20e)](),_0x575e37=document[_0x3279a4(_0x24db9b._0x15c95e)](_0x3279a4(_0x24db9b._0x1c2858));_0x575e37[_0x3279a4(_0x24db9b._0x495dc0)]='server-icon',_0x575e37[_0x3279a4(0x2ac)]=_0x2e7852['name'][_0x3279a4(0x1f4)](0x0,0x1),_0x575e37['id']=_0x3279a4(0x252)+_0x5212e4['id'];const _0x423842=_0x2e7852[_0x3279a4(0x288)]?.['toDate']()?.['getTime']()||0x0,_0x4d6695=_0x2e7852[_0x3279a4(_0x24db9b._0x138d05)+currentUser['uid']]?.[_0x3279a4(0x1fb)]()?.[_0x3279a4(0x245)]()||0x0,_0x4cf487=_0x2e7852[_0x3279a4(0x2a5)]||'',_0x37bc7=_0x423842>_0x4d6695&&_0x4cf487!==currentUser[_0x3279a4(_0x24db9b._0x3046d2)],_0x2687bc=currentChatId===_0x5212e4['id'];if(_0x37bc7&&!_0x2687bc){const _0x3f1731=document[_0x3279a4(_0x24db9b._0x15c95e)](_0x3279a4(0x25f));_0x3f1731[_0x3279a4(0x1ef)]='unread-badge',_0x575e37[_0x3279a4(0x25a)](_0x3f1731);}if(_0x2687bc)_0x575e37[_0x3279a4(_0x24db9b._0x2c19e3)][_0x3279a4(0x1ea)]('active');_0x575e37['onclick']=_0x235d5c=>{const _0x19c234=_0x3279a4;resetActiveIcons(),_0x575e37[_0x19c234(_0x1efdfa._0x59084c)]['add']('active');const _0xf0abe4=_0x575e37[_0x19c234(0x26e)](_0x19c234(_0x1efdfa._0x316bcb));if(_0xf0abe4)_0xf0abe4[_0x19c234(_0x1efdfa._0x24b6c3)]();enterServerChat(_0x5212e4['id'],_0x2e7852[_0x19c234(_0x1efdfa._0x23427d)]);},_0x575e37['oncontextmenu']=_0x5e58eb=>{const _0x24d8be=_0x3279a4;_0x5e58eb[_0x24d8be(_0x2d3526._0x5a27ad)](),contextMenuServerId=_0x5212e4['id'];const _0x38576b=getEl(_0x24d8be(_0x2d3526._0x2e1456));_0x38576b['style'][_0x24d8be(_0x2d3526._0x43a00d)]=_0x24d8be(_0x2d3526._0x48968c),_0x38576b[_0x24d8be(0x2aa)][_0x24d8be(_0x2d3526._0x5e73a2)]=_0x5e58eb[_0x24d8be(_0x2d3526._0x3659cd)]+'px',_0x38576b[_0x24d8be(0x2aa)]['top']=_0x5e58eb[_0x24d8be(0x299)]+'px';},_0x1564dc['appendChild'](_0x575e37);});});}function loadRecentChats(){const _0x5ab8f2={_0x183365:0x28c,_0xa28355:0x288,_0xa4a606:0x233},_0x4c2457={_0x2c11e6:0x2ac,_0x1ca0e9:0x279},_0x33840a={_0x267539:0x20e,_0x5cad51:0x2a0,_0x5a00bf:0x1fb,_0x212cae:0x245,_0x2cb33b:0x272,_0x98c9f6:0x2a5,_0x2d1d73:0x277,_0xb2d994:0x270,_0x26a527:0x2a9},_0x117d0d=_0x22cd48;if(!currentUser)return;if(unsubscribeChatList)unsubscribeChatList();const _0x29de85=getEl(_0x117d0d(0x247)),_0x339031=query(collection(db,_0x117d0d(_0x5ab8f2._0x183365)),where(_0x117d0d(0x1e4),'array-contains',currentUser[_0x117d0d(0x25b)]),orderBy(_0x117d0d(_0x5ab8f2._0xa28355),_0x117d0d(_0x5ab8f2._0xa4a606)));unsubscribeChatList=onSnapshot(_0x339031,_0x1da04a=>{const _0x57fbea={_0x309636:0x2a0,_0x461e27:0x2a0,_0x6fb840:0x224,_0x58f1fa:0x265},_0x54c774={_0xa94fb3:0x26e},_0x10ec9e=_0x117d0d;if(getEl('sidebarTitle')[_0x10ec9e(_0x4c2457._0x2c11e6)]!=='대화')return;let _0x5779bd=_0x10ec9e(_0x4c2457._0x1ca0e9);_0x1da04a[_0x10ec9e(0x2a2)](_0x2c1752=>{const _0x52a6ae=_0x10ec9e,_0x4e2bb2=_0x2c1752[_0x52a6ae(_0x33840a._0x267539)](),_0x43d1df=_0x2c1752['id'];let _0x4e84c7={'displayName':'알\x20수\x20없음','photoURL':''};if(_0x4e2bb2[_0x52a6ae(0x2a0)]){const _0x2c8eae=Object['keys'](_0x4e2bb2[_0x52a6ae(_0x33840a._0x5cad51)])[_0x52a6ae(0x27e)](_0x516ed9=>_0x516ed9!==currentUser[_0x52a6ae(0x25b)]);if(_0x2c8eae)_0x4e84c7=_0x4e2bb2['participantData'][_0x2c8eae];}else return;const _0x45c281=_0x4e2bb2['lastMessageTime']?.[_0x52a6ae(_0x33840a._0x5a00bf)]()?.[_0x52a6ae(_0x33840a._0x212cae)]()||0x0,_0x4f08c0=_0x4e2bb2[_0x52a6ae(_0x33840a._0x2cb33b)+currentUser['uid']]?.[_0x52a6ae(0x1fb)]()?.[_0x52a6ae(_0x33840a._0x212cae)]()||0x0,_0x4b134f=_0x4e2bb2[_0x52a6ae(_0x33840a._0x98c9f6)]||'',_0x5a2801=_0x45c281>_0x4f08c0&&_0x4b134f!==currentUser['uid'],_0x5e9b06=currentChatId===_0x43d1df,_0x41342a=_0x5a2801&&!_0x5e9b06;_0x5779bd+='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22dm-item\x20'+(_0x5e9b06?_0x52a6ae(0x230):'')+_0x52a6ae(0x2af)+_0x43d1df+_0x52a6ae(_0x33840a._0x2d1d73)+(_0x4e84c7['photoURL']||_0x52a6ae(0x1dc))+_0x52a6ae(_0x33840a._0xb2d994)+_0x4e84c7[_0x52a6ae(0x23d)]+_0x52a6ae(0x23e)+(_0x41342a?'<span\x20class=\x22unread-badge\x22></span>':'')+_0x52a6ae(_0x33840a._0x26a527);}),_0x29de85[_0x10ec9e(0x24a)]=_0x5779bd,_0x1da04a['forEach'](_0x48ce63=>{const _0x28db4b=_0x10ec9e,_0x226620=_0x48ce63['id'],_0x50c656=_0x48ce63['data']();let _0x291c9f=null;if(_0x50c656[_0x28db4b(0x2a0)]){const _0x56f6d7=Object['keys'](_0x50c656[_0x28db4b(_0x57fbea._0x309636)])[_0x28db4b(0x27e)](_0x5d534c=>_0x5d534c!==currentUser[_0x28db4b(0x25b)]);if(_0x56f6d7)_0x291c9f={'uid':_0x56f6d7,..._0x50c656[_0x28db4b(_0x57fbea._0x461e27)][_0x56f6d7]};}const _0x2cd9b0=getEl(_0x28db4b(_0x57fbea._0x6fb840)+_0x226620);_0x2cd9b0&&(_0x2cd9b0[_0x28db4b(_0x57fbea._0x58f1fa)]=()=>{const _0x1e7ab9=_0x28db4b,_0xcf7ebb=_0x2cd9b0[_0x1e7ab9(_0x54c774._0xa94fb3)](_0x1e7ab9(0x1e7));if(_0xcf7ebb)_0xcf7ebb[_0x1e7ab9(0x1f5)]();if(_0x291c9f)startDM(_0x291c9f);});});});}function enterServerChat(_0x4a1d12,_0x14aae5){const _0x58a188={_0x1304ed:0x274,_0xcff1bb:0x281,_0x3aabbc:0x2aa,_0x3e1f9a:0x23b,_0x393102:0x20d,_0x3d1149:0x2ac,_0x364eb6:0x1df,_0x26e906:0x27a,_0x15f222:0x2ac,_0x52e753:0x247,_0x33cc9c:0x292},_0x4eb0ba=_0x22cd48;currentChatId=_0x4a1d12,document['title']=_0x14aae5,getEl(_0x4eb0ba(_0x58a188._0x1304ed))[_0x4eb0ba(0x2aa)]['display']=_0x4eb0ba(_0x58a188._0xcff1bb),getEl(_0x4eb0ba(0x207))[_0x4eb0ba(_0x58a188._0x3aabbc)][_0x4eb0ba(_0x58a188._0x3e1f9a)]=_0x4eb0ba(0x281),getEl(_0x4eb0ba(_0x58a188._0x393102))[_0x4eb0ba(0x2aa)][_0x4eb0ba(0x23b)]=_0x4eb0ba(0x262),getEl(_0x4eb0ba(0x248))[_0x4eb0ba(_0x58a188._0x3d1149)]=_0x14aae5,getEl(_0x4eb0ba(_0x58a188._0x364eb6))[_0x4eb0ba(0x1ef)]=_0x4eb0ba(_0x58a188._0x26e906),getEl(_0x4eb0ba(0x1eb))[_0x4eb0ba(_0x58a188._0x15f222)]=_0x14aae5,getEl('inviteBtn')[_0x4eb0ba(_0x58a188._0x3aabbc)][_0x4eb0ba(_0x58a188._0x3e1f9a)]=_0x4eb0ba(0x241),unsubscribeChatList&&(unsubscribeChatList(),unsubscribeChatList=null),getEl(_0x4eb0ba(_0x58a188._0x52e753))[_0x4eb0ba(0x24a)]=_0x4eb0ba(_0x58a188._0x33cc9c),unsubscribePosts&&(unsubscribePosts(),unsubscribePosts=null),loadMessages(_0x4a1d12),markAsRead(_0x4a1d12,!![]);}async function startDM(_0x112e01){const _0x5d3d30={_0x1c9862:0x25b,_0x36e748:0x273,_0x175a62:0x1fd,_0x55b804:0x25b,_0x49d77e:0x272,_0x28643a:0x221,_0x488773:0x230,_0x3710df:0x2aa,_0xb45066:0x23b,_0x7abdc3:0x20d,_0x2b0b00:0x2aa,_0x38be67:0x23d,_0x470239:0x2ac,_0x39bb4f:0x232,_0x379db8:0x2aa,_0x2261ef:0x281,_0x546b12:0x2ac},_0x4f88ad=_0x22cd48,_0x29ee75=[currentUser['uid'],_0x112e01[_0x4f88ad(_0x5d3d30._0x1c9862)]]['sort'](),_0x35adbf=_0x4f88ad(0x251)+_0x29ee75[0x0]+'_'+_0x29ee75[0x1],_0x5b3def=doc(db,_0x4f88ad(0x28c),_0x35adbf),_0x4054cc=await getDoc(_0x5b3def);!_0x4054cc[_0x4f88ad(_0x5d3d30._0x36e748)]()&&await setDoc(_0x5b3def,{'members':_0x29ee75,'participantData':{[currentUser[_0x4f88ad(_0x5d3d30._0x1c9862)]]:{'displayName':currentUser[_0x4f88ad(0x23d)],'photoURL':currentUser[_0x4f88ad(0x1fd)]},[_0x112e01['uid']]:{'displayName':_0x112e01[_0x4f88ad(0x23d)],'photoURL':_0x112e01[_0x4f88ad(_0x5d3d30._0x175a62)]}},'createdAt':serverTimestamp(),'lastMessageTime':serverTimestamp(),'lastMessageSenderId':currentUser[_0x4f88ad(0x25b)],['lastRead_'+currentUser[_0x4f88ad(_0x5d3d30._0x55b804)]]:serverTimestamp(),[_0x4f88ad(_0x5d3d30._0x49d77e)+_0x112e01['uid']]:serverTimestamp()}),resetActiveIcons(),getEl(_0x4f88ad(_0x5d3d30._0x28643a))['classList'][_0x4f88ad(0x1ea)](_0x4f88ad(_0x5d3d30._0x488773)),getEl(_0x4f88ad(0x274))[_0x4f88ad(_0x5d3d30._0x3710df)][_0x4f88ad(_0x5d3d30._0xb45066)]=_0x4f88ad(0x281),getEl(_0x4f88ad(0x207))[_0x4f88ad(_0x5d3d30._0x3710df)][_0x4f88ad(0x23b)]='none',getEl(_0x4f88ad(_0x5d3d30._0x7abdc3))[_0x4f88ad(_0x5d3d30._0x2b0b00)][_0x4f88ad(0x23b)]='flex',currentChatId=_0x35adbf,document[_0x4f88ad(0x275)]=_0x112e01[_0x4f88ad(_0x5d3d30._0x38be67)],getEl(_0x4f88ad(0x248))[_0x4f88ad(_0x5d3d30._0x470239)]=_0x112e01[_0x4f88ad(0x23d)],getEl(_0x4f88ad(0x1df))[_0x4f88ad(0x1ef)]=_0x4f88ad(0x264),getEl(_0x4f88ad(_0x5d3d30._0x39bb4f))[_0x4f88ad(_0x5d3d30._0x379db8)][_0x4f88ad(_0x5d3d30._0xb45066)]=_0x4f88ad(_0x5d3d30._0x2261ef),getEl('sidebarTitle')[_0x4f88ad(_0x5d3d30._0x546b12)]='대화',unsubscribePosts&&(unsubscribePosts(),unsubscribePosts=null),loadMessages(_0x35adbf),markAsRead(_0x35adbf,![]);}async function markAsRead(_0x5d727c,_0x410c88=![]){const _0x32bf54={_0x237a9e:0x29d},_0x372c8b=_0x22cd48;if(!currentUser||!_0x5d727c)return;const _0x12e9ed={[_0x372c8b(0x272)+currentUser[_0x372c8b(0x25b)]]:serverTimestamp()};try{if(_0x410c88)await updateDoc(doc(db,_0x372c8b(0x267),_0x5d727c),_0x12e9ed);else await updateDoc(doc(db,_0x372c8b(0x28c),_0x5d727c),_0x12e9ed);}catch(_0x271da9){console[_0x372c8b(_0x32bf54._0x237a9e)](_0x372c8b(0x2a8));}}async function leaveServerFromContext(){const _0x2090be={_0x523fd1:0x1f6},_0x42a15d=_0x22cd48;if(!contextMenuServerId||!currentUser)return;if(!confirm('서버에서\x20나가시겠습니까?'))return;try{await updateDoc(doc(db,'servers',contextMenuServerId),{'members':arrayRemove(currentUser[_0x42a15d(0x25b)])});if(currentChatId===contextMenuServerId)showHomeView();alert(_0x42a15d(_0x2090be._0x523fd1));}catch(_0xe453bd){alert(_0x42a15d(0x283)+_0xe453bd[_0x42a15d(0x212)]);}}async function createServer(){const _0x2ec450={_0x35574a:0x239,_0x1f6f65:0x2a3,_0x16c018:0x25b,_0x56323e:0x25b,_0x3aac8f:0x23b,_0x321c47:0x281},_0x2b14fb=_0x22cd48,_0x51a070=getEl('newServerName')[_0x2b14fb(_0x2ec450._0x35574a)][_0x2b14fb(_0x2ec450._0x1f6f65)]();if(!_0x51a070)return;await addDoc(collection(db,_0x2b14fb(0x267)),{'name':_0x51a070,'owner':currentUser['uid'],'members':[currentUser[_0x2b14fb(_0x2ec450._0x16c018)]],'createdAt':serverTimestamp(),'lastMessageTime':serverTimestamp(),'lastMessageSenderId':currentUser[_0x2b14fb(0x25b)],[_0x2b14fb(0x272)+currentUser[_0x2b14fb(_0x2ec450._0x56323e)]]:serverTimestamp()}),getEl(_0x2b14fb(0x2b3))['style'][_0x2b14fb(_0x2ec450._0x3aac8f)]=_0x2b14fb(_0x2ec450._0x321c47);}async function joinServer(){const _0x14a093={_0x11db7f:0x239,_0x1a3c1a:0x25b,_0xc01b6c:0x2b3,_0x486aad:0x23b,_0x29c167:0x281},_0x3b5ae2=_0x22cd48,_0x2fb2a4=getEl(_0x3b5ae2(0x26c))[_0x3b5ae2(_0x14a093._0x11db7f)][_0x3b5ae2(0x2a3)]();if(!_0x2fb2a4)return;const _0x39964b=doc(db,_0x3b5ae2(0x267),_0x2fb2a4),_0x1929c5=await getDoc(_0x39964b);_0x1929c5['exists']()&&(await updateDoc(_0x39964b,{'members':arrayUnion(currentUser[_0x3b5ae2(_0x14a093._0x1a3c1a)])}),getEl(_0x3b5ae2(_0x14a093._0xc01b6c))[_0x3b5ae2(0x2aa)][_0x3b5ae2(_0x14a093._0x486aad)]=_0x3b5ae2(_0x14a093._0x29c167));}function handlePasteUpload(_0x509e1e){const _0x1337d4={_0x19ad77:0x1fa,_0x2259db:0x225},_0x239d4e=_0x22cd48,_0x28be2a=(_0x509e1e['clipboardData']||_0x509e1e[_0x239d4e(_0x1337d4._0x19ad77)][_0x239d4e(0x22c)])[_0x239d4e(0x1ee)];for(let _0x4b1c65 in _0x28be2a){const _0x4a063d=_0x28be2a[_0x4b1c65];if(_0x4a063d[_0x239d4e(_0x1337d4._0x2259db)]===_0x239d4e(0x243)&&_0x4a063d['type'][_0x239d4e(0x284)]('image')){processAndUploadImage(_0x4a063d[_0x239d4e(0x255)]()),_0x509e1e['preventDefault']();return;}}}async function processAndUploadImage(_0x576906){const _0x46a9d0={_0x59c769:0x276,_0x37a3da:0x24a,_0x584832:0x239},_0xbeaee2=_0x22cd48;if(!currentUser||!currentChatId)return;const _0x411161=getEl(_0xbeaee2(_0x46a9d0._0x59c769)),_0x3ec943=_0x411161[_0xbeaee2(0x24a)];_0x411161[_0xbeaee2(_0x46a9d0._0x37a3da)]='<i\x20class=\x22fas\x20fa-spinner\x20fa-spin\x22></i>',_0x411161[_0xbeaee2(0x223)]=!![];try{const _0x4e19dc=await uploadToImgBB(_0x576906);if(_0x4e19dc)await sendMessage(null,_0x4e19dc);}catch(_0x43bbc7){console['log'](_0x43bbc7);}_0x411161['innerHTML']=_0x3ec943,_0x411161['disabled']=![],getEl('imageInput')[_0xbeaee2(_0x46a9d0._0x584832)]='';}function _0x1927(_0x537668,_0x397854){_0x537668=_0x537668-0x1d8;const _0x307806=_0x3078();let _0x192734=_0x307806[_0x537668];return _0x192734;}async function uploadToImgBB(_0x62b252){const _0x27b2c6={_0xccd3ad:0x1e6,_0x2164a9:0x1e3,_0x202312:0x229,_0x2cb91c:0x298},_0xe33e10=_0x22cd48,_0x364427=new FormData();_0x364427[_0xe33e10(0x2a1)](_0xe33e10(0x25d),_0x62b252);const _0x92e42b=await fetch(_0xe33e10(0x209)+IMGBB_API_KEY+_0xe33e10(_0x27b2c6._0xccd3ad),{'method':_0xe33e10(_0x27b2c6._0x2164a9),'body':_0x364427}),_0x27ce67=await _0x92e42b[_0xe33e10(0x285)]();return _0x27ce67[_0xe33e10(_0x27b2c6._0x202312)]?_0x27ce67[_0xe33e10(0x20e)][_0xe33e10(_0x27b2c6._0x2cb91c)]:null;}async function sendMessage(_0x17cca8=null,_0x3c55c9=null){const _0x988026={_0x11971d:0x239,_0x2dc4eb:0x2a3,_0x411ff4:0x2a4,_0x3a1f4c:0x25b,_0x46174d:0x251,_0x5c8460:0x267,_0xffff46:0x25b,_0x3221ea:0x25b,_0x50a4df:0x28c,_0x41edfd:0x272,_0x36621c:0x227},_0x288148=_0x22cd48,_0x2f5211=getEl(_0x288148(0x1f7)),_0x331577=_0x17cca8!==null?_0x17cca8:_0x2f5211[_0x288148(_0x988026._0x11971d)][_0x288148(_0x988026._0x2dc4eb)]();if(!_0x331577&&!_0x3c55c9||!currentChatId)return;if(_0x331577[_0x288148(_0x988026._0x411ff4)]>0xc8){alert(_0x288148(0x259));return;}const _0x326652=Date[_0x288148(0x266)]();if(_0x326652-lastMessageTime<0x3e8)return;lastMessageTime=_0x326652;const _0x1984dc={'text':_0x331577||'','imageUrl':_0x3c55c9||null,'uid':currentUser[_0x288148(_0x988026._0x3a1f4c)],'displayName':currentUser[_0x288148(0x23d)],'photoURL':currentUser['photoURL'],'createdAt':serverTimestamp()};try{const _0x4eb442=writeBatch(db),_0x5918d1=doc(collection(db,_0x288148(0x28c),currentChatId,'messages'));_0x4eb442['set'](_0x5918d1,_0x1984dc);const _0x3c8cd5=!currentChatId[_0x288148(0x217)](_0x288148(_0x988026._0x46174d));if(_0x3c8cd5){const _0x4b75df=doc(db,_0x288148(_0x988026._0x5c8460),currentChatId);_0x4eb442['update'](_0x4b75df,{'lastMessageTime':serverTimestamp(),'lastMessageSenderId':currentUser[_0x288148(_0x988026._0xffff46)],[_0x288148(0x272)+currentUser[_0x288148(_0x988026._0x3221ea)]]:serverTimestamp()});}else{const _0x3595bc=doc(db,_0x288148(_0x988026._0x50a4df),currentChatId);_0x4eb442['set'](_0x3595bc,{'lastMessageTime':serverTimestamp(),'lastMessageSenderId':currentUser[_0x288148(_0x988026._0xffff46)],[_0x288148(_0x988026._0x41edfd)+currentUser['uid']]:serverTimestamp(),'members':arrayUnion(currentUser[_0x288148(0x25b)])},{'merge':!![]});}await _0x4eb442[_0x288148(0x26d)]();if(!_0x3c55c9)_0x2f5211[_0x288148(0x239)]='';}catch(_0x22425b){console[_0x288148(0x28a)](_0x288148(0x234),_0x22425b);if(_0x22425b[_0x288148(_0x988026._0x36621c)]==='not-found')alert(_0x288148(0x1e8));}}function loadMessages(_0x2f9392){const _0x5a7817={_0x450435:0x29e,_0xb7b13c:0x28c,_0x3d13c7:0x220,_0x2f81db:0x1ed,_0x1b6bab:0x29c},_0x425aa3={_0x2cd5fe:0x213,_0x2dd5e7:0x1ec,_0x185925:0x27d,_0x2b85a7:0x1ed,_0xd93cb:0x1fb,_0x117b78:0x291,_0x4da213:0x21c,_0x14de4f:0x217,_0x3eba53:0x251,_0x1f3eb4:0x203,_0x41fbc5:0x254,_0x3f7ab0:0x211,_0x23ffc5:0x204,_0x546736:0x1ef,_0x2b418d:0x210,_0x114caa:0x29a,_0x26afd0:0x228,_0x107a9d:0x202},_0x348a26=_0x22cd48;if(unsubscribeMessages)unsubscribeMessages();const _0x4aaae8=getEl(_0x348a26(_0x5a7817._0x450435));_0x4aaae8['innerHTML']='';const _0x454cb0=query(collection(db,_0x348a26(_0x5a7817._0xb7b13c),_0x2f9392,_0x348a26(_0x5a7817._0x3d13c7)),orderBy(_0x348a26(_0x5a7817._0x2f81db),_0x348a26(_0x5a7817._0x1b6bab)),limit(0x4b));unsubscribeMessages=onSnapshot(_0x454cb0,_0xc96f1f=>{const _0x4aba0b=_0x348a26;_0xc96f1f[_0x4aba0b(0x2b0)]()['forEach'](_0x24899c=>{const _0x5f03ef=_0x4aba0b;if(_0x24899c[_0x5f03ef(_0x425aa3._0x2cd5fe)]===_0x5f03ef(_0x425aa3._0x2dd5e7)){const _0x1bcb09=_0x24899c[_0x5f03ef(_0x425aa3._0x185925)]['data'](),_0x13f96c=_0x1bcb09[_0x5f03ef(0x25b)]===currentUser[_0x5f03ef(0x25b)];let _0x56693c='';if(_0x1bcb09[_0x5f03ef(_0x425aa3._0x2b85a7)]){const _0x26a08f=_0x1bcb09[_0x5f03ef(_0x425aa3._0x2b85a7)][_0x5f03ef(_0x425aa3._0xd93cb)]?_0x1bcb09[_0x5f03ef(0x1ed)][_0x5f03ef(_0x425aa3._0xd93cb)]():new Date();_0x56693c=_0x26a08f['toLocaleTimeString'](_0x5f03ef(0x258),{'hour':_0x5f03ef(_0x425aa3._0x117b78),'minute':_0x5f03ef(_0x425aa3._0x117b78)});}!_0x13f96c&&document[_0x5f03ef(_0x425aa3._0x4da213)]&&(document['title']='🔴\x20새\x20메시지!');if(!document[_0x5f03ef(0x21c)]&&currentChatId===_0x2f9392){const _0x4fa451=!_0x2f9392[_0x5f03ef(_0x425aa3._0x14de4f)](_0x5f03ef(_0x425aa3._0x3eba53));markAsRead(_0x2f9392,_0x4fa451);}let _0x27fa1c='';if(_0x1bcb09[_0x5f03ef(_0x425aa3._0x1f3eb4)])_0x27fa1c+=_0x5f03ef(0x21e)+_0x1bcb09[_0x5f03ef(_0x425aa3._0x1f3eb4)]+'\x22\x20class=\x22chat-image\x22\x20onclick=\x22window.open(this.src)\x22>';if(_0x1bcb09[_0x5f03ef(0x1fe)])_0x27fa1c+=_0x5f03ef(_0x425aa3._0x41fbc5)+_0x1bcb09[_0x5f03ef(0x1fe)]+_0x5f03ef(_0x425aa3._0x3f7ab0);const _0x555815=document['createElement'](_0x5f03ef(_0x425aa3._0x23ffc5));_0x555815[_0x5f03ef(_0x425aa3._0x546736)]=_0x5f03ef(0x257)+(_0x13f96c?'me':_0x5f03ef(_0x425aa3._0x2b418d)),_0x555815['innerHTML']=_0x13f96c?_0x5f03ef(_0x425aa3._0x114caa)+_0x56693c+_0x5f03ef(0x1da)+_0x27fa1c+_0x5f03ef(0x211):'<img\x20src=\x22'+_0x1bcb09[_0x5f03ef(0x1fd)]+_0x5f03ef(_0x425aa3._0x26afd0)+_0x1bcb09['displayName']+_0x5f03ef(0x28d)+_0x27fa1c+_0x5f03ef(_0x425aa3._0x107a9d)+_0x56693c+_0x5f03ef(0x22b),_0x4aaae8[_0x5f03ef(0x25a)](_0x555815);}}),_0x4aaae8[_0x4aba0b(0x24c)]=_0x4aaae8[_0x4aba0b(0x231)];});}function loadCommunityPosts(){const _0x398bfe={_0x4d8aff:0x27c},_0x3de2fc={_0x1342c6:0x1de},_0x11a9d4={_0x1b91e4:0x20e,_0x292a0d:0x1ed,_0x88f452:0x1d9,_0x5c1be4:0x24b,_0x5efc5d:0x265},_0x1a8f54=_0x22cd48;if(unsubscribePosts)unsubscribePosts();const _0x50b56e=getEl('postsContainer'),_0x2210e5=query(collection(db,_0x1a8f54(_0x398bfe._0x4d8aff)),orderBy(_0x1a8f54(0x1ed),_0x1a8f54(0x233)),limit(0x32));unsubscribePosts=onSnapshot(_0x2210e5,_0xb07ea6=>{const _0x3770d7=_0x1a8f54;_0x50b56e['innerHTML']='';if(_0xb07ea6[_0x3770d7(_0x3de2fc._0x1342c6)])_0x50b56e['innerHTML']='<div\x20style=\x22color:#72767d;\x20text-align:center;\x22>작성된\x20글이\x20없습니다.</div>';_0xb07ea6[_0x3770d7(0x2a2)](_0x47b79f=>{const _0x37093e=_0x3770d7,_0x4746e7=_0x47b79f[_0x37093e(_0x11a9d4._0x1b91e4)](),_0x4c255=_0x4746e7[_0x37093e(_0x11a9d4._0x292a0d)]?new Date(_0x4746e7[_0x37093e(0x1ed)][_0x37093e(0x236)]*0x3e8)[_0x37093e(0x25c)]():'',_0x1921d2=document[_0x37093e(0x205)](_0x37093e(0x204));_0x1921d2[_0x37093e(0x1ef)]=_0x37093e(_0x11a9d4._0x88f452),_0x1921d2[_0x37093e(0x24a)]='<h3>'+_0x4746e7['title']+_0x37093e(0x26a)+_0x4746e7[_0x37093e(0x2b1)]+_0x37093e(0x208)+_0x4c255+_0x37093e(_0x11a9d4._0x5c1be4),_0x1921d2[_0x37093e(_0x11a9d4._0x5efc5d)]=()=>showPostDetail(_0x47b79f['id'],_0x4746e7),_0x50b56e[_0x37093e(0x25a)](_0x1921d2);});});}function showWriteForm(){const _0x2320ba={_0x444e12:0x2aa,_0x45833c:0x1ff,_0x528efb:0x23b,_0x3becab:0x1e5},_0x5937bd=_0x22cd48;getEl('postListSection')[_0x5937bd(_0x2320ba._0x444e12)][_0x5937bd(0x23b)]=_0x5937bd(0x281),getEl(_0x5937bd(_0x2320ba._0x45833c))[_0x5937bd(_0x2320ba._0x444e12)][_0x5937bd(_0x2320ba._0x528efb)]=_0x5937bd(0x262),getEl(_0x5937bd(_0x2320ba._0x3becab))[_0x5937bd(0x239)]='',getEl('postContentInput')['value']='';}async function submitPost(){const _0x3466a2={_0x3211dd:0x1e5,_0x879c8e:0x2a3,_0x4b4ab4:0x293,_0x25a187:0x2a3},_0x2c1344=_0x22cd48,_0x148a61=getEl(_0x2c1344(_0x3466a2._0x3211dd))[_0x2c1344(0x239)][_0x2c1344(_0x3466a2._0x879c8e)](),_0x3cbe9e=getEl(_0x2c1344(_0x3466a2._0x4b4ab4))[_0x2c1344(0x239)][_0x2c1344(_0x3466a2._0x25a187)]();if(!_0x148a61||!_0x3cbe9e)return;await addDoc(collection(db,_0x2c1344(0x27c)),{'title':_0x148a61,'content':_0x3cbe9e,'authorUid':currentUser['uid'],'authorName':currentUser[_0x2c1344(0x23d)],'createdAt':serverTimestamp()}),showCommunityView();}function showPostDetail(_0x3db046,_0x5b9758){const _0x1220c5={_0x1e999d:0x2aa,_0x5b3d4b:0x23b,_0x4c9651:0x23b,_0x26a8ca:0x2ac,_0x20853d:0x26f,_0x1ad19e:0x2ac,_0x2d42b9:0x236,_0x577708:0x1db},_0x3b86f0=_0x22cd48;currentPostId=_0x3db046,getEl('postListSection')[_0x3b86f0(_0x1220c5._0x1e999d)][_0x3b86f0(_0x1220c5._0x5b3d4b)]='none',getEl(_0x3b86f0(0x23a))[_0x3b86f0(_0x1220c5._0x1e999d)][_0x3b86f0(_0x1220c5._0x4c9651)]='flex',getEl(_0x3b86f0(0x24d))[_0x3b86f0(0x2ac)]=_0x5b9758['title'],getEl(_0x3b86f0(0x200))[_0x3b86f0(_0x1220c5._0x26a8ca)]=_0x5b9758[_0x3b86f0(0x2b1)],getEl(_0x3b86f0(0x27f))[_0x3b86f0(0x2ac)]=_0x5b9758[_0x3b86f0(_0x1220c5._0x20853d)],getEl(_0x3b86f0(0x1fc))[_0x3b86f0(_0x1220c5._0x1ad19e)]=_0x5b9758[_0x3b86f0(0x1ed)]?new Date(_0x5b9758[_0x3b86f0(0x1ed)][_0x3b86f0(_0x1220c5._0x2d42b9)]*0x3e8)[_0x3b86f0(_0x1220c5._0x577708)]():'',loadComments(_0x3db046);}function loadComments(_0x26b6b7){const _0x432427={_0x9f0db1:0x27c,_0x57e71f:0x1ed,_0x296981:0x29c},_0x10c858={_0x4f7434:0x2a2},_0x2a4018=_0x22cd48;if(unsubscribeComments)unsubscribeComments();const _0x1b55ec=getEl(_0x2a4018(0x1e0)),_0x34cd9d=query(collection(db,_0x2a4018(_0x432427._0x9f0db1),_0x26b6b7,_0x2a4018(0x22d)),orderBy(_0x2a4018(_0x432427._0x57e71f),_0x2a4018(_0x432427._0x296981)),limit(0x64));unsubscribeComments=onSnapshot(_0x34cd9d,_0xb2c694=>{const _0xa6220b={_0x17c87f:0x205,_0x3ba308:0x204,_0xf65af0:0x1ef,_0x410d35:0x24f,_0x4928ec:0x1fe,_0x34cc0f:0x211},_0x5ba220=_0x2a4018;_0x1b55ec['innerHTML']='',_0xb2c694[_0x5ba220(_0x10c858._0x4f7434)](_0x3b450c=>{const _0x2efd11=_0x5ba220,_0x16e86d=_0x3b450c['data'](),_0x571f1b=document[_0x2efd11(_0xa6220b._0x17c87f)](_0x2efd11(_0xa6220b._0x3ba308));_0x571f1b[_0x2efd11(_0xa6220b._0xf65af0)]='comment-item',_0x571f1b[_0x2efd11(0x24a)]=_0x2efd11(_0xa6220b._0x410d35)+_0x16e86d[_0x2efd11(0x2b1)]+_0x2efd11(0x2b2)+_0x16e86d[_0x2efd11(_0xa6220b._0x4928ec)]+_0x2efd11(_0xa6220b._0x34cc0f),_0x1b55ec[_0x2efd11(0x25a)](_0x571f1b);});});}async function submitComment(){const _0x1f193e={_0x29d07b:0x2a3,_0x3d2261:0x27c,_0x4adcb3:0x22d,_0xc915d0:0x23d},_0x562508=_0x22cd48,_0x4345de=getEl(_0x562508(0x269))[_0x562508(0x239)][_0x562508(_0x1f193e._0x29d07b)]();if(!_0x4345de||!currentPostId)return;await addDoc(collection(db,_0x562508(_0x1f193e._0x3d2261),currentPostId,_0x562508(_0x1f193e._0x4adcb3)),{'text':_0x4345de,'authorName':currentUser[_0x562508(_0x1f193e._0xc915d0)],'uid':currentUser['uid'],'createdAt':serverTimestamp()}),getEl(_0x562508(0x269))[_0x562508(0x239)]='';}async function loadAllUsers(){const _0x5eed71={_0xb3b6b9:0x2a2},_0x490079=_0x22cd48,_0x2fd9ae=getEl(_0x490079(0x1e2));if(cachedUserList){renderUserList(cachedUserList);return;}const _0x41dc0a=query(collection(db,_0x490079(0x246))),_0x483179=await getDocs(_0x41dc0a);cachedUserList=[],_0x483179[_0x490079(_0x5eed71._0xb3b6b9)](_0x407337=>cachedUserList[_0x490079(0x222)](_0x407337[_0x490079(0x20e)]())),renderUserList(cachedUserList);}function renderUserList(_0x23d33c){const _0x146b79={_0x3c715e:0x2a2},_0x299e3b={_0x1407df:0x204,_0x10635f:0x1ef,_0x436e80:0x2a7,_0x1aba57:0x1fd,_0x305c38:0x244,_0x1f89dd:0x265,_0x1522af:0x25a},_0x48fe14=_0x22cd48,_0x4e9aee=getEl('userListContainer');_0x4e9aee[_0x48fe14(0x24a)]='';let _0xf50f52=0x0;_0x23d33c[_0x48fe14(_0x146b79._0x3c715e)](_0x2803bb=>{const _0x34e7c7=_0x48fe14;if(_0x2803bb['uid']===currentUser[_0x34e7c7(0x25b)])return;_0xf50f52++;const _0x5a8090=document['createElement'](_0x34e7c7(_0x299e3b._0x1407df));_0x5a8090[_0x34e7c7(_0x299e3b._0x10635f)]=_0x34e7c7(_0x299e3b._0x436e80),_0x5a8090['innerHTML']=_0x34e7c7(0x21e)+_0x2803bb[_0x34e7c7(_0x299e3b._0x1aba57)]+_0x34e7c7(_0x299e3b._0x305c38)+_0x2803bb[_0x34e7c7(0x23d)]+'</h4></div>',_0x5a8090[_0x34e7c7(_0x299e3b._0x1f89dd)]=()=>startDM(_0x2803bb),_0x4e9aee[_0x34e7c7(_0x299e3b._0x1522af)](_0x5a8090);}),getEl(_0x48fe14(0x24e))[_0x48fe14(0x2ac)]=_0xf50f52;}function handleSearch(_0xaa4fc0){const _0x2acd96={_0x48dd5b:0x239,_0x3d5c59:0x237,_0x204b9d:0x250,_0x5868bd:0x2a2},_0x472682=_0x22cd48,_0x576171=_0xaa4fc0[_0x472682(0x21d)][_0x472682(_0x2acd96._0x48dd5b)]['toLowerCase']();document[_0x472682(_0x2acd96._0x3d5c59)](_0x472682(_0x2acd96._0x204b9d))[_0x472682(_0x2acd96._0x5868bd)](_0x1ed559=>_0x1ed559[_0x472682(0x2aa)]['display']=_0x1ed559[_0x472682(0x1f2)][_0x472682(0x253)]()[_0x472682(0x284)](_0x576171)?'flex':'none');}
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { 
+    getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { 
+    getFirestore, collection, addDoc, query, orderBy, onSnapshot, 
+    serverTimestamp, setDoc, doc, getDoc, updateDoc, arrayUnion, arrayRemove, where, getDocs, deleteDoc,
+    enableIndexedDbPersistence, limit, writeBatch
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// === 설정 ===
+const firebaseConfig = {
+    apiKey: "AIzaSyBw2TJjZYZZPd1piCeoFnAXhqEAcCLe1FE",
+    authDomain: "chat-7e64b.firebaseapp.com",
+    projectId: "chat-7e64b",
+    storageBucket: "chat-7e64b.firebasestorage.app",
+    messagingSenderId: "1094029259482",
+    appId: "1:1094029259482:web:992007326706c5f6bd6be3",
+    measurementId: "G-QMTLBH6TX0"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+try { enableIndexedDbPersistence(db).catch(() => {}); } catch(e) {}
+
+const IMGBB_API_KEY = "ba55d8996626ae2a418e0374ff993157";
+
+// === 전역 변수 ===
+let currentUser = null;
+let currentChatId = null;
+let currentPostId = null;
+let contextMenuServerId = null;
+
+// 리스너 해제용 변수 (화면 이동시 끄기 위함)
+let unsubscribeMessages = null;
+let unsubscribePosts = null;
+let unsubscribeComments = null;
+let unsubscribeChatList = null; 
+let unsubscribeServerList = null; 
+
+let cachedUserList = null; 
+let lastMessageTime = 0; 
+
+const getEl = (id) => document.getElementById(id);
+
+// === 초기화 ===
+document.addEventListener('DOMContentLoaded', () => {
+    getEl('googleLoginBtn')?.addEventListener('click', handleLogin);
+    getEl('settingsBtn')?.addEventListener('click', openSettings);
+    getEl('closeSettingsBtn')?.addEventListener('click', () => getEl('settingsModal').style.display = 'none');
+    getEl('modalLogoutBtn')?.addEventListener('click', () => { signOut(auth); getEl('settingsModal').style.display = 'none'; });
+
+    document.addEventListener('click', () => getEl('serverContextMenu').style.display = 'none');
+    getEl('contextLeaveServer')?.addEventListener('click', () => leaveServerFromContext());
+    getEl('contextCopyId')?.addEventListener('click', () => {
+        if(contextMenuServerId) { navigator.clipboard.writeText(contextMenuServerId); alert("ID 복사됨"); }
+    });
+
+    getEl('homeBtn')?.addEventListener('click', showHomeView);
+    getEl('communityBtn')?.addEventListener('click', showCommunityView);
+
+    getEl('addServerBtn')?.addEventListener('click', () => getEl('serverModal').style.display = 'flex');
+    getEl('closeModalBtn')?.addEventListener('click', () => getEl('serverModal').style.display = 'none');
+    getEl('createServerBtn')?.addEventListener('click', createServer);
+    getEl('joinServerBtn')?.addEventListener('click', joinServer);
+    getEl('inviteBtn')?.addEventListener('click', () => navigator.clipboard.writeText(currentChatId).then(() => alert("초대 코드 복사됨")));
+
+    getEl('sendMsgBtn')?.addEventListener('click', () => sendMessage());
+    getEl('messageInput')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+    getEl('messageInput')?.addEventListener('paste', handlePasteUpload);
+    getEl('attachBtn')?.addEventListener('click', () => getEl('imageInput').click());
+    getEl('imageInput')?.addEventListener('change', (e) => { if(e.target.files[0]) processAndUploadImage(e.target.files[0]); });
+
+    getEl('writePostBtn')?.addEventListener('click', showWriteForm);
+    getEl('cancelPostBtn')?.addEventListener('click', () => { getEl('postWriteSection').style.display = 'none'; getEl('postListSection').style.display = 'flex'; });
+    getEl('submitPostBtn')?.addEventListener('click', submitPost);
+    getEl('backToListBtn')?.addEventListener('click', showCommunityView);
+    getEl('submitCommentBtn')?.addEventListener('click', submitComment);
+    getEl('userSearchInput')?.addEventListener('input', handleSearch);
+});
+
+// === 인증 로직 ===
+async function handleLogin() {
+    try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch (e) { alert("로그인 오류: " + e.message); }
+}
+
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        let displayName = user.displayName;
+        if (user.email === 'yudongyun08@gmail.com') displayName = "관리자";
+        currentUser = { ...user, displayName }; 
+
+        getEl('loginOverlay').style.display = 'none';
+        getEl('myAvatar').src = user.photoURL;
+        getEl('myName').textContent = displayName;
+        
+        await setDoc(doc(db, "users", user.uid), {
+            uid: user.uid, displayName, email: user.email, photoURL: user.photoURL, lastLogin: serverTimestamp()
+        }, { merge: true });
+
+        // 로그인 직후 홈 화면 로드
+        loadMyServers(); 
+        showHomeView(); 
+    } else {
+        currentUser = null;
+        cachedUserList = null;
+        getEl('loginOverlay').style.display = 'flex';
+        // 로그아웃 시 모든 리스너 해제
+        if(unsubscribeChatList) unsubscribeChatList();
+        if(unsubscribeServerList) unsubscribeServerList();
+        if(unsubscribeMessages) unsubscribeMessages();
+    }
+});
+
+function openSettings() {
+    if(!currentUser) return;
+    getEl('settingAvatar').src = currentUser.photoURL;
+    getEl('settingName').textContent = currentUser.displayName;
+    getEl('settingEmail').textContent = currentUser.email;
+    getEl('settingsModal').style.display = 'flex';
+}
+
+// === [핵심 수정] 화면 전환 및 사이드바 초기화 ===
+function resetActiveIcons() {
+    document.querySelectorAll('.server-icon').forEach(el => el.classList.remove('active'));
+}
+
+function showHomeView() {
+    // 1. 상태 초기화
+    resetActiveIcons();
+    getEl('homeBtn').classList.add('active');
+    
+    // 2. 화면 전환
+    getEl('homeView').style.display = 'flex';
+    getEl('chatView').style.display = 'none';
+    getEl('communityView').style.display = 'none';
+    
+    // 3. 헤더 및 사이드바 텍스트 설정
+    getEl('mainHeaderTitle').textContent = "홈";
+    getEl('mainHeaderIcon').className = "fas fa-home";
+    getEl('sidebarTitle').textContent = "대화";
+    getEl('inviteBtn').style.display = 'none';
+    
+    // 4. 리스너 정리 (다른 화면의 리스너 끄기)
+    currentChatId = null;
+    if(unsubscribeMessages) { unsubscribeMessages(); unsubscribeMessages = null; }
+    if(unsubscribePosts) { unsubscribePosts(); unsubscribePosts = null; }
+    
+    // 5. [중요] 사이드바를 '최근 대화' 모드로 강제 전환 및 로드
+    getEl('sidebarContent').innerHTML = '<div class="channel-category">로딩 중...</div>';
+    loadRecentChats(); 
+    loadAllUsers();
+}
+
+function showCommunityView() {
+    resetActiveIcons();
+    getEl('communityBtn').classList.add('active');
+    getEl('homeView').style.display = 'none';
+    getEl('chatView').style.display = 'none';
+    getEl('communityView').style.display = 'flex';
+    
+    currentChatId = null;
+    // 채팅 관련 리스너들 끄기
+    if(unsubscribeMessages) { unsubscribeMessages(); unsubscribeMessages = null; }
+    if(unsubscribeChatList) { unsubscribeChatList(); unsubscribeChatList = null; } // 사이드바 감시 끄기
+    
+    getEl('postListSection').style.display = 'flex';
+    getEl('postWriteSection').style.display = 'none';
+    getEl('postDetailSection').style.display = 'none';
+    
+    getEl('mainHeaderTitle').textContent = "자유게시판";
+    getEl('sidebarTitle').textContent = "커뮤니티";
+    getEl('inviteBtn').style.display = 'none';
+    
+    // 사이드바를 커뮤니티용으로 교체
+    getEl('sidebarContent').innerHTML = `<div class="channel-category">게시판</div><div class="dm-item active"><i class="fas fa-list"></i> 자유게시판</div>`;
+    loadCommunityPosts();
+}
+
+// === 서버 목록 로드 (왼쪽 바) ===
+function loadMyServers() {
+    if (!currentUser) return;
+    if (unsubscribeServerList) unsubscribeServerList();
+
+    const q = query(collection(db, "servers"), where("members", "array-contains", currentUser.uid));
+    unsubscribeServerList = onSnapshot(q, (snapshot) => {
+        const container = getEl('serverListContainer');
+        container.innerHTML = '';
+        
+        snapshot.forEach((docSnap) => {
+            const server = docSnap.data();
+            const div = document.createElement('div');
+            div.className = 'server-icon';
+            div.textContent = server.name.substring(0, 1);
+            
+            // [빨간 점 로직]
+            const lastMsgTime = server.lastMessageTime?.toDate()?.getTime() || 0;
+            const myReadTime = server[`lastRead_${currentUser.uid}`]?.toDate()?.getTime() || 0;
+            
+            if (lastMsgTime > myReadTime) {
+                const badge = document.createElement('span');
+                badge.className = 'unread-badge'; 
+                div.appendChild(badge);
+            }
+
+            if (currentChatId === docSnap.id) div.classList.add('active');
+
+            div.onclick = (e) => {
+                resetActiveIcons();
+                div.classList.add('active');
+                // 뱃지 제거
+                const badge = div.querySelector('.unread-badge');
+                if(badge) badge.remove(); 
+                enterServerChat(docSnap.id, server.name);
+            };
+            div.oncontextmenu = (e) => {
+                e.preventDefault();
+                contextMenuServerId = docSnap.id;
+                const menu = getEl('serverContextMenu');
+                menu.style.display = 'block';
+                menu.style.left = `${e.pageX}px`;
+                menu.style.top = `${e.pageY}px`;
+            };
+            container.appendChild(div);
+        });
+    });
+}
+
+// === [중요 수정] 최근 대화 목록 로드 (홈 화면 사이드바) ===
+function loadRecentChats() {
+    if (!currentUser) return;
+    // 기존 리스너가 있다면 끄고 새로 연결 (화면 전환 시 갱신을 위해)
+    if (unsubscribeChatList) unsubscribeChatList();
+
+    const container = getEl('sidebarContent');
+    const q = query(collection(db, "chats"), where("members", "array-contains", currentUser.uid), orderBy("lastMessageTime", "desc"));
+
+    unsubscribeChatList = onSnapshot(q, (snapshot) => {
+        // 혹시라도 현재 화면이 홈(대화)이 아니면 업데이트 중단
+        if(getEl('sidebarTitle').textContent !== "대화") return;
+
+        let html = `<div class="channel-category">최근 대화</div>`;
+        
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            const chatId = docSnap.id;
+            
+            let otherUser = { displayName: "알 수 없음", photoURL: "" };
+            if (data.participantData) {
+                const otherUid = Object.keys(data.participantData).find(uid => uid !== currentUser.uid);
+                if(otherUid) otherUser = data.participantData[otherUid];
+            } else { return; } // 데이터 깨진 채팅방 무시
+
+            // 빨간 점 계산
+            const lastMsgTime = data.lastMessageTime?.toDate()?.getTime() || 0;
+            const myReadTime = data[`lastRead_${currentUser.uid}`]?.toDate()?.getTime() || 0;
+            const hasUnread = lastMsgTime > myReadTime;
+            const isActive = (currentChatId === chatId);
+            
+            html += `
+            <div class="dm-item ${isActive?'active':''}" id="chat_item_${chatId}">
+                <img src="${otherUser.photoURL || 'https://via.placeholder.com/32'}">
+                <span class="name">${otherUser.displayName}</span>
+                ${hasUnread ? '<span class="unread-badge"></span>' : ''} 
+            </div>`;
+        });
+        
+        container.innerHTML = html;
+
+        // 클릭 이벤트 연결
+        snapshot.forEach(docSnap => {
+            const chatId = docSnap.id;
+            const data = docSnap.data();
+            let otherUser = null;
+            if (data.participantData) {
+                const otherUid = Object.keys(data.participantData).find(uid => uid !== currentUser.uid);
+                if(otherUid) otherUser = { uid: otherUid, ...data.participantData[otherUid] };
+            }
+
+            if(getEl(`chat_item_${chatId}`)) {
+                getEl(`chat_item_${chatId}`).onclick = () => {
+                    if(otherUser) startDM(otherUser);
+                };
+            }
+        });
+    });
+}
+
+function enterServerChat(serverId, serverName) {
+    currentChatId = serverId;
+    
+    // 화면 전환
+    getEl('homeView').style.display = 'none';
+    getEl('communityView').style.display = 'none';
+    getEl('chatView').style.display = 'flex';
+    
+    // 헤더 & 사이드바 설정
+    getEl('mainHeaderTitle').textContent = serverName;
+    getEl('mainHeaderIcon').className = "fas fa-users";
+    getEl('sidebarTitle').textContent = serverName;
+    getEl('inviteBtn').style.display = 'block';
+    
+    // [중요] 사이드바를 서버 채널로 교체 (DM 리스너 꺼야함)
+    if(unsubscribeChatList) { unsubscribeChatList(); unsubscribeChatList = null; }
+    getEl('sidebarContent').innerHTML = `<div class="channel-category">채널</div><div class="dm-item active"><i class="fas fa-hashtag"></i> 일반</div>`;
+    
+    if(unsubscribePosts) { unsubscribePosts(); unsubscribePosts = null; }
+    
+    loadMessages(serverId);
+    markAsRead(serverId, true); 
+}
+
+async function startDM(targetUser) {
+    const uids = [currentUser.uid, targetUser.uid].sort();
+    const dmId = `dm_${uids[0]}_${uids[1]}`;
+    
+    const chatRef = doc(db, "chats", dmId);
+    const chatSnap = await getDoc(chatRef);
+    
+    if (!chatSnap.exists()) {
+        await setDoc(chatRef, {
+            members: uids,
+            participantData: {
+                [currentUser.uid]: { displayName: currentUser.displayName, photoURL: currentUser.photoURL },
+                [targetUser.uid]: { displayName: targetUser.displayName, photoURL: targetUser.photoURL }
+            },
+            createdAt: serverTimestamp(),
+            lastMessageTime: serverTimestamp(),
+            [`lastRead_${currentUser.uid}`]: serverTimestamp(),
+            [`lastRead_${targetUser.uid}`]: serverTimestamp()
+        });
+    }
+
+    resetActiveIcons();
+    getEl('homeBtn').classList.add('active');
+    
+    getEl('homeView').style.display = 'none'; 
+    getEl('communityView').style.display = 'none'; 
+    getEl('chatView').style.display = 'flex';
+    
+    currentChatId = dmId;
+    getEl('mainHeaderTitle').textContent = targetUser.displayName; 
+    getEl('mainHeaderIcon').className = "fas fa-user"; 
+    getEl('inviteBtn').style.display = 'none';
+    
+    // DM 들어갈 때는 sidebarTitle이 여전히 "대화"여야 사이드바 목록이 유지됨
+    getEl('sidebarTitle').textContent = "대화"; 
+    
+    if(unsubscribePosts) { unsubscribePosts(); unsubscribePosts = null; }
+    
+    loadMessages(dmId);
+    markAsRead(dmId, false);
+}
+
+// 읽음 처리 (서버/DM 통합)
+async function markAsRead(chatId, isServer = false) {
+    if(!currentUser || !chatId) return;
+    
+    const updateData = { [`lastRead_${currentUser.uid}`]: serverTimestamp() };
+
+    try {
+        if (isServer) {
+            await updateDoc(doc(db, "servers", chatId), updateData);
+        } else {
+            await updateDoc(doc(db, "chats", chatId), updateData);
+        }
+    } catch(e) { console.log("읽음 처리 실패"); }
+}
+
+async function leaveServerFromContext() {
+    if (!contextMenuServerId || !currentUser) return;
+    if (!confirm("서버에서 나가시겠습니까?")) return;
+    try {
+        await updateDoc(doc(db, "servers", contextMenuServerId), { members: arrayRemove(currentUser.uid) });
+        if(currentChatId === contextMenuServerId) showHomeView();
+        alert("나갔습니다.");
+    } catch (e) { alert("오류: " + e.message); }
+}
+
+async function createServer() {
+    const name = getEl('newServerName').value.trim();
+    if (!name) return;
+    await addDoc(collection(db, "servers"), { 
+        name, 
+        owner: currentUser.uid, 
+        members: [currentUser.uid], 
+        createdAt: serverTimestamp(),
+        lastMessageTime: serverTimestamp(),
+        [`lastRead_${currentUser.uid}`]: serverTimestamp()
+    });
+    getEl('serverModal').style.display = 'none';
+}
+async function joinServer() {
+    const id = getEl('joinServerCode').value.trim();
+    if (!id) return;
+    const ref = doc(db, "servers", id);
+    const snap = await getDoc(ref);
+    if(snap.exists()) { await updateDoc(ref, { members: arrayUnion(currentUser.uid) }); getEl('serverModal').style.display = 'none'; }
+}
+
+// === 메시지 전송 로직 ===
+function handlePasteUpload(e) {
+    const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+    for (let index in items) {
+        const item = items[index];
+        if (item.kind === 'file' && item.type.includes('image')) {
+            processAndUploadImage(item.getAsFile());
+            e.preventDefault();
+            return;
+        }
+    }
+}
+
+async function processAndUploadImage(file) {
+    if (!currentUser || !currentChatId) return;
+    const sendBtn = getEl('sendMsgBtn');
+    const org = sendBtn.innerHTML;
+    sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; sendBtn.disabled = true;
+    try {
+        const url = await uploadToImgBB(file);
+        if(url) await sendMessage(null, url);
+    } catch(e) { console.log(e); }
+    sendBtn.innerHTML = org; sendBtn.disabled = false;
+    getEl('imageInput').value = '';
+}
+
+async function uploadToImgBB(file) {
+    const formData = new FormData(); formData.append("image", file);
+    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}&expiration=86400`, { method: "POST", body: formData });
+    const data = await res.json();
+    return data.success ? data.data.url : null;
+}
+
+async function sendMessage(textOverride=null, imageUrl=null) {
+    const input = getEl('messageInput');
+    const text = textOverride !== null ? textOverride : input.value.trim();
+
+    if ((!text && !imageUrl) || !currentChatId) return;
+    if (text.length > 200) { alert("200자 제한"); return; }
+    
+    const now = Date.now();
+    if (now - lastMessageTime < 1000) return; 
+    lastMessageTime = now;
+
+    const messageData = {
+        text: text || "", imageUrl: imageUrl || null, 
+        uid: currentUser.uid, displayName: currentUser.displayName, photoURL: currentUser.photoURL, 
+        createdAt: serverTimestamp()
+    };
+
+    try {
+        const batch = writeBatch(db);
+        
+        const msgRef = doc(collection(db, "chats", currentChatId, "messages"));
+        batch.set(msgRef, messageData);
+
+        const isServer = !currentChatId.startsWith("dm_");
+        
+        if (isServer) {
+            const serverRef = doc(db, "servers", currentChatId);
+            batch.update(serverRef, {
+                lastMessageTime: serverTimestamp(),
+                [`lastRead_${currentUser.uid}`]: serverTimestamp() 
+            });
+        } else {
+            const chatRef = doc(db, "chats", currentChatId);
+            batch.set(chatRef, {
+                lastMessageTime: serverTimestamp(),
+                [`lastRead_${currentUser.uid}`]: serverTimestamp(),
+                members: arrayUnion(currentUser.uid)
+            }, { merge: true });
+        }
+
+        await batch.commit();
+
+        if(!imageUrl) input.value = '';
+    } catch (e) {
+        console.error("전송 실패:", e);
+        if (e.code === "not-found") alert("채팅방 정보를 찾을 수 없습니다.");
+    }
+}
+
+function loadMessages(chatId) {
+    if (unsubscribeMessages) unsubscribeMessages();
+    const container = getEl('messagesContainer');
+    container.innerHTML = ''; 
+
+    const q = query(collection(db, "chats", chatId, "messages"), orderBy("createdAt", "asc"), limit(75));
+    
+    unsubscribeMessages = onSnapshot(q, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+            if (change.type === "added") {
+                const msg = change.doc.data();
+                const isMe = msg.uid === currentUser.uid;
+                
+                let timeStr = "";
+                if (msg.createdAt) {
+                    const date = msg.createdAt.toDate ? msg.createdAt.toDate() : new Date();
+                    timeStr = date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+                }
+
+                if (!isMe && document.hidden) document.title = "🔴 새 메시지!";
+                if (!document.hidden && currentChatId === chatId) {
+                    const isServer = !chatId.startsWith("dm_");
+                    markAsRead(chatId, isServer);
+                }
+
+                let contentHtml = '';
+                if(msg.imageUrl) contentHtml += `<img src="${msg.imageUrl}" class="chat-image" onclick="window.open(this.src)">`;
+                if(msg.text) contentHtml += `<div>${msg.text}</div>`;
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = `message-wrapper ${isMe?'me':'other'}`;
+                
+                wrapper.innerHTML = isMe 
+                    ? `<span class="msg-time">${timeStr}</span><div class="bubble">${contentHtml}</div>` 
+                    : `<img src="${msg.photoURL}" class="avatar">
+                       <div class="bubble-group">
+                           <span class="meta">${msg.displayName}</span>
+                           <div style="display:flex; align-items:flex-end;">
+                               <div class="bubble">${contentHtml}</div>
+                               <span class="msg-time">${timeStr}</span>
+                           </div>
+                       </div>`;
+                
+                container.appendChild(wrapper);
+            }
+        });
+        container.scrollTop = container.scrollHeight;
+    });
+}
+
+// === 커뮤니티 ===
+function loadCommunityPosts() {
+    if (unsubscribePosts) unsubscribePosts();
+    const container = getEl('postsContainer');
+    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(50));
+    
+    unsubscribePosts = onSnapshot(q, (snapshot) => {
+        container.innerHTML = '';
+        if(snapshot.empty) container.innerHTML = '<div style="color:#72767d; text-align:center;">작성된 글이 없습니다.</div>';
+        snapshot.forEach(docSnap => {
+            const p = docSnap.data();
+            const date = p.createdAt ? new Date(p.createdAt.seconds*1000).toLocaleDateString() : '';
+            const div = document.createElement('div');
+            div.className = 'post-item';
+            div.innerHTML = `<h3>${p.title}</h3><div class="post-info"><span>${p.authorName}</span> • <span>${date}</span></div>`;
+            div.onclick = () => showPostDetail(docSnap.id, p);
+            container.appendChild(div);
+        });
+    });
+}
+function showWriteForm() { getEl('postListSection').style.display = 'none'; getEl('postWriteSection').style.display = 'flex'; getEl('postTitleInput').value=''; getEl('postContentInput').value=''; }
+async function submitPost() {
+    const title = getEl('postTitleInput').value.trim(); const content = getEl('postContentInput').value.trim();
+    if(!title||!content) return;
+    await addDoc(collection(db, "posts"), { title, content, authorUid: currentUser.uid, authorName: currentUser.displayName, createdAt: serverTimestamp() });
+    showCommunityView();
+}
+function showPostDetail(pid, pdata) {
+    currentPostId = pid;
+    getEl('postListSection').style.display='none'; getEl('postDetailSection').style.display='flex';
+    getEl('detailTitle').textContent = pdata.title; getEl('detailAuthor').textContent = pdata.authorName;
+    getEl('detailContent').textContent = pdata.content; getEl('detailDate').textContent = pdata.createdAt?new Date(pdata.createdAt.seconds*1000).toLocaleString():'';
+    loadComments(pid);
+}
+function loadComments(pid) {
+    if(unsubscribeComments) unsubscribeComments();
+    const container = getEl('commentsContainer');
+    const q = query(collection(db, "posts", pid, "comments"), orderBy("createdAt", "asc"), limit(100));
+    unsubscribeComments = onSnapshot(q, (snapshot) => {
+        container.innerHTML = '';
+        snapshot.forEach(doc => {
+            const c = doc.data();
+            const div = document.createElement('div');
+            div.className = 'comment-item';
+            div.innerHTML = `<div class="comment-header">${c.authorName}</div><div>${c.text}</div>`;
+            container.appendChild(div);
+        });
+    });
+}
+async function submitComment() {
+    const text = getEl('commentInput').value.trim();
+    if(!text || !currentPostId) return;
+    await addDoc(collection(db, "posts", currentPostId, "comments"), { text, authorName: currentUser.displayName, uid: currentUser.uid, createdAt: serverTimestamp() });
+    getEl('commentInput').value = '';
+}
+
+// === 유저 목록 ===
+async function loadAllUsers() {
+    const container = getEl('userListContainer');
+    if (cachedUserList) { renderUserList(cachedUserList); return; }
+    const q = query(collection(db, "users"));
+    const snapshot = await getDocs(q);
+    cachedUserList = [];
+    snapshot.forEach(doc => cachedUserList.push(doc.data()));
+    renderUserList(cachedUserList);
+}
+
+function renderUserList(users) {
+    const container = getEl('userListContainer');
+    container.innerHTML = '';
+    let count = 0;
+    users.forEach(user => {
+        if(user.uid === currentUser.uid) return;
+        count++;
+        const div = document.createElement('div');
+        div.className = 'user-card';
+        div.innerHTML = `<img src="${user.photoURL}"><div><h4>${user.displayName}</h4></div>`;
+        div.onclick = () => startDM(user);
+        container.appendChild(div);
+    });
+    getEl('userCount').textContent = count;
+}
+
+function handleSearch(e) {
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll('.user-card').forEach(card => card.style.display = card.innerText.toLowerCase().includes(term) ? 'flex' : 'none');
+}
