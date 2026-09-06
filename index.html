@@ -1,156 +1,117 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>채팅 서비스 이전 안내</title>
+  <!-- 메타 태그를 통한 자동 이동 백업 -->
+  <meta http-equiv="refresh" content="5;url=https://dyspro08.github.io/chat">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #1e1f22;
+      color: #f2f3f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      background-color: #2b2d31;
+      border-radius: 12px;
+      padding: 40px 32px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      border: 1px solid #35363c;
+    }
+    .icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #ffffff;
+    }
+    p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #b5bac1;
+      margin-bottom: 24px;
+    }
+    .notice-box {
+      background-color: #1e1f22;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: #949ba4;
+      margin-bottom: 28px;
+      word-break: break-all;
+      border: 1px solid #2b2d31;
+    }
+    .notice-box span {
+      color: #5865f2;
+      font-weight: 600;
+    }
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 14px 20px;
+      background-color: #5865f2;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background-color 0.2s ease;
+    }
+    .btn:hover {
+      background-color: #4752c4;
+    }
+    .countdown {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #80848e;
+    }
+  </style>
 </head>
 <body>
-
-    <div id="loginOverlay" class="login-container">
-        <div class="login-box">
-            <i class="fas fa-comments fa-3x" style="color: #8ab4f8; margin-bottom: 20px;"></i>
-            <h2>환영합니다</h2>
-            <button id="googleLoginBtn" class="google-btn">Google로 로그인</button>
-        </div>
+  <div class="card">
+    <div class="icon">🚀</div>
+    <h1>채팅 서비스 이전 안내</h1>
+    <p>
+      기존 채팅 서비스 운영이 종료되었으며,<br>
+      새로운 채팅 서비스로 이전되었습니다. 여기 닫을거임.
+    </p>
+    <div class="notice-box">
+      새 주소: <span>https://dyspro08.github.io/chat</span>
     </div>
-
-    <div id="serverModal" class="modal-overlay" style="display:none;">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3>스페이스 만들기</h3>
-                <button id="closeModalBtn" class="close-btn"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-content">
-                <input type="text" id="newServerName" placeholder="스페이스 이름">
-                <button id="createServerBtn" class="action-btn create">만들기</button>
-                <div class="divider"><span>또는</span></div>
-                <input type="text" id="joinServerCode" placeholder="초대 코드">
-                <button id="joinServerBtn" class="action-btn join">참가하기</button>
-            </div>
-        </div>
+    <a href="https://dyspro08.github.io/chat" class="btn">새 채팅 사이트로 이동하기</a>
+    <div class="countdown">
+      <span id="seconds">5</span>초 후 자동으로 이동합니다...
     </div>
+  </div>
 
-    <div id="settingsModal" class="modal-overlay" style="display:none;">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3>설정</h3>
-                <button id="closeSettingsBtn" class="close-btn"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-content">
-                <div class="user-detail-view">
-                    <img id="settingAvatar" src="" class="avatar-large">
-                    <h4 id="settingName">...</h4>
-                    <p id="settingEmail" style="color:#9aa0a6; font-size:14px; margin-bottom:20px;">...</p>
-                </div>
-                <button id="modalLogoutBtn" class="action-btn logout-btn">로그아웃</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="serverContextMenu" class="context-menu" style="display:none;">
-        <div class="context-item delete" id="contextLeaveServer"><i class="fas fa-sign-out-alt"></i> 서버 나가기</div>
-        <div class="context-item" id="contextCopyId"><i class="fas fa-copy"></i> ID 복사하기</div>
-    </div>
-
-    <div class="app-container">
-        <nav class="server-sidebar">
-            <div class="server-icon active" id="homeBtn" title="홈"><i class="fas fa-home"></i></div>
-            
-            <div class="server-icon community-icon" id="communityBtn" title="커뮤니티"><i class="fas fa-globe"></i></div>
-            
-            <div class="server-separator"></div>
-            <div id="serverListContainer"></div>
-            <div class="server-icon add-server" id="addServerBtn"><i class="fas fa-plus"></i></div>
-        </nav>
-
-        <aside class="channel-sidebar">
-            <div class="sidebar-header"><span id="sidebarTitle">대화</span></div>
-            <div class="channel-list-area" id="sidebarContent"></div>
-            <div class="user-profile-area">
-                <img id="myAvatar" src="" class="avatar-small">
-                <div class="user-info"><span id="myName">...</span></div>
-                <div class="profile-icons"><i class="fas fa-cog" id="settingsBtn"></i></div>
-            </div>
-        </aside>
-
-        <main class="main-area">
-            <header class="main-header">
-                <div class="header-left">
-                    <i class="fas fa-hashtag" id="mainHeaderIcon"></i>
-                    <h3 id="mainHeaderTitle">홈</h3>
-                </div>
-                <div class="header-right">
-                    <button id="inviteBtn" class="header-action-btn" style="display:none;">초대</button>
-                </div>
-            </header>
-            
-            <div id="homeView" class="view-section active">
-                <div class="content-body">
-                    <div class="search-wrapper">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="userSearchInput" placeholder="사용자 검색">
-                    </div>
-                    <div class="friends-label">접속 중인 사용자 (<span id="userCount">0</span>)</div>
-                    <div class="user-grid-container" id="userListContainer"></div>
-                </div>
-            </div>
-
-            <div id="communityView" class="view-section" style="display:none;">
-                <div id="postListSection" class="community-layout">
-                    <div class="community-actions">
-                        <button id="writePostBtn" class="header-action-btn" style="background:#8ab4f8; color:#202124;">
-                            <i class="fas fa-pen"></i> 글쓰기
-                        </button>
-                    </div>
-                    <div id="postsContainer" class="posts-list"></div>
-                </div>
-
-                <div id="postWriteSection" class="community-layout" style="display:none;">
-                    <div class="write-form">
-                        <input type="text" id="postTitleInput" placeholder="제목" class="post-input">
-                        <textarea id="postContentInput" placeholder="내용" class="post-textarea"></textarea>
-                        <div class="form-buttons">
-                            <button id="cancelPostBtn" class="action-btn join" style="width:auto;">취소</button>
-                            <button id="submitPostBtn" class="action-btn create" style="width:auto;">등록</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="postDetailSection" class="community-layout" style="display:none;">
-                    <button id="backToListBtn" class="back-btn"><i class="fas fa-arrow-left"></i> 목록으로</button>
-                    <div class="post-detail-card">
-                        <h2 id="detailTitle">제목</h2>
-                        <div class="post-meta"><span id="detailAuthor">...</span> • <span id="detailDate">...</span></div>
-                        <div id="detailContent" class="post-body">...</div>
-                    </div>
-                    <div class="comment-section">
-                        <h4>댓글</h4>
-                        <div id="commentsContainer" class="comments-list"></div>
-                        <div class="comment-input-wrapper">
-                            <input type="text" id="commentInput" placeholder="댓글 작성">
-                            <button id="submitCommentBtn"><i class="fas fa-paper-plane"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="chatView" class="view-section" style="display:none;">
-                <div class="messages-container" id="messagesContainer"></div>
-                <div class="input-area">
-                    <div class="input-wrapper">
-                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
-                        <button class="attach-btn" id="attachBtn"><i class="fas fa-plus"></i></button>
-                        <input type="text" id="messageInput" placeholder="메시지 입력 (이미지 붙여넣기 가능)">
-                        <button id="sendMsgBtn" class="send-icon-btn"><i class="fas fa-paper-plane"></i></button>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-    <script type="module" src="script.js"></script>
+  <script>
+    let count = 5;
+    const secondsEl = document.getElementById('seconds');
+    const timer = setInterval(() => {
+      count--;
+      if (secondsEl) secondsEl.textContent = count;
+      if (count <= 0) {
+        clearInterval(timer);
+        window.location.href = "https://dyspro08.github.io/chat";
+      }
+    }, 1000);
+  </script>
 </body>
 </html>
